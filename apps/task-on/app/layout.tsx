@@ -15,7 +15,7 @@ export const metadata = {
     description: '효율적인 할 일 관리를 위한 TaskOn',
     type: 'website',
     locale: 'ko_KR',
-    alternateLocales: ['en_US'],
+    alternateLocale: ['en_US'],
     siteName: 'TaskOn',
   },
   twitter: {

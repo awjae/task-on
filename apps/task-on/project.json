@@ -4,6 +4,24 @@
   "sourceRoot": "apps/task-on",
   "projectType": "application",
   "tags": [],
-  "// targets": "to see all targets run: nx show project task-on --web",
-  "targets": {}
+  "targets": {
+    "build": {
+      "configurations": {
+        "production": {
+          "outputPath": "../dist/apps/task-on",
+          "fileReplacements": [
+            {
+              "replace": "apps/task-on/environments/environment.ts",
+              "with": "apps/task-on/environments/environment.prod.ts"
+            }
+          ],
+          "optimization": true,
+          "sourceMap": false,
+          "extractCss": true,
+          "namedChunks": false,
+          "aot": true
+        }
+      }
+    }
+  }
 }

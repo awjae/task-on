@@ -6,12 +6,16 @@
   "targets": {
     "build": {
       "executor": "nx-electron:build",
-      "outputs": ["{options.outputPath}"],
+      "outputs": [
+        "{options.outputPath}"
+      ],
       "options": {
         "outputPath": "dist/apps/task-on-electron",
         "main": "apps/task-on-electron/src/main.ts",
         "tsConfig": "apps/task-on-electron/tsconfig.app.json",
-        "assets": ["apps/task-on-electron/src/assets"]
+        "assets": [
+          "apps/task-on-electron/src/assets"
+        ]
       },
       "configurations": {
         "production": {

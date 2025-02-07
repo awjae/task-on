@@ -36,8 +36,12 @@
     "**/*.tsx",
     "../../apps/task-on/.next/types/**/*.ts",
     "../../dist/apps/task-on/.next/types/**/*.ts",
+    "../dist/apps/task-on/types/**/*.ts",
+    ".next/types/**/*.ts",
+    "dist/apps/task-on/types/**/*.ts",
+    "dist/task-on/types/**/*.ts",
     "next-env.d.ts",
-    ".next/types/**/*.ts"
+    "dist/types/**/*.ts"
   ],
   "exclude": [
     "node_modules",
