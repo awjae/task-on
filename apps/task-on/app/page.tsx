@@ -101,6 +101,7 @@ export default function Index() {
 
   const aiReviewTest = (unusedValue: number) => {
     console.log(123);
+    console.log(456);
   }
 
   return (
