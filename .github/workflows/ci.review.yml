@@ -4,6 +4,9 @@ on:
   pull_request:
     types: [opened, synchronize, reopened]
 
+permissions:
+  pull-requests: write  # PR에 대한 읽기/쓰기를 명시적으로 설정
+
 jobs:
   code-review:
     runs-on: ubuntu-latest
