@@ -60,7 +60,8 @@ jobs:
       # 9. Post AI review as a comment to the pull request
       - name: Post AI Review as Comment
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # GitHub Action에서 기본 제공하는 토큰
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # GitHub CLI에 사용할 토큰
         run: |
           COMMENT=$(cat review.txt)
           gh pr comment ${{ github.event.pull_request.number }} --body "$COMMENT"
