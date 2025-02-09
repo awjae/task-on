@@ -99,6 +99,10 @@ export default function Index() {
     setTodos(todos.filter(todo => todo.id !== id));
   };
 
+  const aiReviewTest = (unusedValue: number) => {
+    console.log(123);
+  }
+
   return (
     <StyledPage>
       <div className="header">
