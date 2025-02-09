@@ -1,0 +1,36 @@
+name: AI Code Review (Llama.cpp)
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+jobs:
+  code-review:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: sudo apt update && sudo apt install -y git cmake make g++ unzip
+
+      - name: Clone llama.cpp
+        run: git clone https://github.com/ggerganov/llama.cpp.git && cd llama.cpp && make
+
+      - name: Download LLM model
+        run: |
+          mkdir -p models
+          wget -O models/tinyllama.gguf https://huggingface.co/TheBloke/TinyLlama-1.1B-Chat-GGUF/resolve/main/tinyllama.gguf
+
+      - name: Run AI Code Review
+        run: |
+          DIFF=$(git diff HEAD~1)
+          cd llama.cpp
+          ./main -m ../models/tinyllama.gguf -p "Review this code diff:\n$DIFF" > review.txt
+
+      - name: Post AI Review as Comment
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          COMMENT=$(cat llama.cpp/review.txt)
+          gh pr comment ${{ github.event.pull_request.number }} --body "$COMMENT"
