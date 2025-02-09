@@ -1,0 +1,48 @@
+name: Gemini Code Review
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+  pull-requests: write 
+
+jobs:
+  code_review:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  
+
+      - name: Get Changed Files
+        id: changed-files
+        uses: tj-actions/changed-files@v39
+
+      - name: Install Dependencies
+        run: |
+          sudo apt-get update && sudo apt-get install -y jq curl
+
+      - name: Generate Code Review with Gemini API
+        run: |
+          DIFF=$(git diff origin/main...HEAD)
+          REVIEW=$(curl -s -X POST "https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent?key=${{ secrets.GEMINI_API_KEY }}" \
+            -H "Content-Type: application/json" \
+            -d "{
+              'contents': [{
+                'parts': [{'text': 'Review the following code changes and provide feedback:\n\n'$DIFF}]
+              }]
+            }" | jq -r '.candidates[0].content.parts[0].text')
+
+          echo "Review result:"
+          echo "$REVIEW"
+
+          # PR에 코멘트 추가
+          echo "$REVIEW" > review_comment.txt
+
+      - name: Post Review Comment on PR
+        uses: mshick/add-pr-comment@v2
+        with:
+          message-path: review_comment.txt
+          repo-token: ${{ secrets.GITHUB_TOKEN }}

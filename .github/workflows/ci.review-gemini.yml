@@ -1,4 +1,4 @@
-name: "Run ai-reviewer"
+name: "Run ai-reviewer error 있음"
 
 permissions:
   pull-requests: write
@@ -12,6 +12,7 @@ on:
 jobs:
   run-review:
     runs-on: ubuntu-latest
+    if: false
     steps:
       - name: Gemini Review Bot
         uses: Nasubikun/ai-reviewer@v1

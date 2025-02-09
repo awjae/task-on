@@ -10,6 +10,7 @@ permissions:
 jobs:
   review:
     runs-on: ubuntu-latest
+    if: false
     steps:
       - uses: miladv33/deepseek-pr-review@v1.0.0
         with:
