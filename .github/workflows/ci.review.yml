@@ -80,7 +80,7 @@ jobs:
           chmod +x llama.cpp/build/bin/llama-save-load-state
           DIFF_TEXT="Reviewing the following files: $FILES"
           EXECUTABLE=$(realpath llama.cpp/build/bin/llama-save-load-state)
-          $EXECUTABLE -m ../../models/tinyllama.gguf -p "$DIFF_TEXT" > ../../review.txt
+          $EXECUTABLE -m $(realpath models/tinyllama.gguf) -p "$DIFF_TEXT" > ../../review.txt
           
       # 9. Post AI review as a comment to the pull request
       - name: Post AI Review as Comment
