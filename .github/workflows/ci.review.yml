@@ -15,7 +15,14 @@ jobs:
         run: sudo apt update && sudo apt install -y git cmake make g++ unzip
 
       - name: Clone llama.cpp
-        run: git clone https://github.com/ggerganov/llama.cpp.git && cd llama.cpp && make
+        run: git clone https://github.com/ggerganov/llama.cpp.git
+
+      - name: Build llama.cpp using CMake
+        run: |
+          cd llama.cpp
+          mkdir build && cd build
+          cmake ..
+          cmake --build . --parallel
 
       - name: Download LLM model
         run: |
@@ -25,12 +32,12 @@ jobs:
       - name: Run AI Code Review
         run: |
           DIFF=$(git diff HEAD~1)
-          cd llama.cpp
-          ./main -m ../models/tinyllama.gguf -p "Review this code diff:\n$DIFF" > review.txt
+          cd llama.cpp/build
+          ./bin/main -m ../../models/tinyllama.gguf -p "Review this code diff:\n$DIFF" > ../../review.txt
 
       - name: Post AI Review as Comment
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          COMMENT=$(cat llama.cpp/review.txt)
+          COMMENT=$(cat review.txt)
           gh pr comment ${{ github.event.pull_request.number }} --body "$COMMENT"
