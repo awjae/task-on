@@ -6,7 +6,7 @@ on:
 permissions: write-all
 
 jobs:
-  gemini-review:
+  gemini-review 4:
     runs-on: ubuntu-latest
 
     steps:
