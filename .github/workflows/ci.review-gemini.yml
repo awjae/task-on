@@ -12,7 +12,6 @@ on:
 jobs:
   run-review:
     runs-on: ubuntu-latest
-    if: false
     steps:
       - name: Gemini Review Bot
         uses: Nasubikun/ai-reviewer@v1
