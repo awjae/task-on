@@ -38,6 +38,8 @@ jobs:
           mkdir build && cd build
           cmake ..
           cmake --build . --parallel
+          # 빌드 후 ./bin/main 파일이 있는지 확인
+          ls -l ./bin
 
       # 6. Download model from Hugging Face using the API token
       - name: Download model from Hugging Face
@@ -56,6 +58,13 @@ jobs:
           
           # PR 변경 파일 목록을 가져오기
           FILES=$(gh pr view ${{ github.event.pull_request.number }} --json files --jq ".files[].filename")
+          
+          # 파일 목록이 비어있는지 확인
+          if [ -z "$FILES" ]; then
+            echo "No files changed in this PR."
+            exit 1  # 파일이 없다면 CI를 종료
+          fi
+
           echo "FILES=$FILES" >> $GITHUB_ENV
 
       # 8. Run AI Code Review
