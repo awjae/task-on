@@ -19,14 +19,12 @@ jobs:
 
       # 2. Install necessary dependencies
       - name: Install dependencies
-        if: false
         run: |
           sudo apt update
           sudo apt install -y git cmake make g++ unzip wget curl
 
       # 3. Setup Hugging Face API Token (stored in GitHub secrets)
       - name: Setup Hugging Face Token
-        if: false
         run: |
           echo "HUGGINGFACE_TOKEN=${{ secrets.HUGGINGFACE_TOKEN }}" >> $GITHUB_ENV
 
@@ -36,7 +34,6 @@ jobs:
 
       # 5. Build llama.cpp using CMake
       - name: Build llama.cpp using CMake
-        if: false
         run: |
           cd llama.cpp
           mkdir build && cd build
@@ -45,7 +42,6 @@ jobs:
 
       # 6. Download model from Hugging Face using the API token
       - name: Download model from Hugging Face
-        if: false
         run: |
           mkdir -p models
           curl -L -H "Authorization: Bearer $HUGGINGFACE_TOKEN" \
@@ -68,7 +64,6 @@ jobs:
 
       # 8. Run AI Code Review
       - name: Run AI Code Review
-        if: false
         run: |
           cd llama.cpp/build
           DIFF_TEXT="Reviewing the following files: $FILES"
@@ -76,7 +71,6 @@ jobs:
 
       # 9. Post AI review as a comment to the pull request
       - name: Post AI Review as Comment
-        if: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # GitHub Action에서 기본 제공하는 토큰
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # GitHub CLI에 사용할 토큰
