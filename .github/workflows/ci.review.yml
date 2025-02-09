@@ -12,7 +12,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Install dependencies
-        run: sudo apt update && sudo apt install -y git cmake make g++ unzip
+        run: sudo apt update && sudo apt install -y git cmake g++ unzip
 
       - name: Clone llama.cpp
         run: git clone https://github.com/ggerganov/llama.cpp.git
@@ -31,7 +31,10 @@ jobs:
 
       - name: Run AI Code Review
         run: |
-          DIFF=$(git diff HEAD~1)
+          # Fetch PR diff
+          DIFF=$(gh pr view ${{ github.event.pull_request.number }} --json diff --jq ".diff" )
+          
+          # Run AI review with the fetched diff
           cd llama.cpp/build
           ./bin/main -m ../../models/tinyllama.gguf -p "Review this code diff:\n$DIFF" > ../../review.txt
 
