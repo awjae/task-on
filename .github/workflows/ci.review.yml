@@ -58,7 +58,7 @@ jobs:
           mkdir -p models
           curl -L -H "Authorization: Bearer $HUGGINGFACE_TOKEN" \
             -o models/tinyllama.gguf \
-            https://huggingface.co/TheBloke/TinyLlama-1.1B-Chat-v1.0-GGUF/resolve/main/tinyllama-1.1b-chat-v1.0.Q2_K.gguf
+            https://huggingface.co/TheBloke/TinyLlama-1.1B-Chat-v1.0-GGUF/blob/main/tinyllama-1.1b-chat-v1.0.Q2_K.gguf
 
       # 7. Fetch the code diff from the pull request using files instead of diff
       - name: Fetch changed files
@@ -73,20 +73,23 @@ jobs:
 
           echo "FILES=$FILES" >> $GITHUB_ENV
           echo "Fetched files: $FILES"
-
+          
       # 8. Run AI Code Review
       - name: Run AI Code Review
         run: |
           chmod +x llama.cpp/build/bin/llama-save-load-state
           DIFF_TEXT="Reviewing the following files: $FILES"
           EXECUTABLE=$(realpath llama.cpp/build/bin/llama-save-load-state)
-          $EXECUTABLE -m $(realpath models/tinyllama.gguf) -p "$DIFF_TEXT" > ../../review.txt
-          
+          OUTPUT_FILE=$(realpath ../../review.txt)  # review.txt의 절대 경로 저장
+          $EXECUTABLE -m $(realpath models/tinyllama.gguf) -p "$DIFF_TEXT" > "$OUTPUT_FILE"
+
       # 9. Post AI review as a comment to the pull request
       - name: Post AI Review as Comment
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # GitHub Action에서 기본 제공하는 토큰
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # GitHub CLI에 사용할 토큰
         run: |
-          COMMENT=$(cat review.txt)
+          # 절대경로로 review.txt 파일 읽기
+          COMMENT=$(cat "$OUTPUT_FILE")
           gh pr comment ${{ github.event.pull_request.number }} --body "$COMMENT"
+
