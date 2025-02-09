@@ -1,0 +1,23 @@
+name: Quality Check
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches: 
+      - main
+
+jobs:
+  main:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: lint check
+        run: npx nx lint
+
+      - name: build check
+        run: npx nx build
