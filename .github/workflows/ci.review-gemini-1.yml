@@ -26,11 +26,13 @@ jobs:
 
       - name: Generate Code Review with Gemini API
         run: |
-          DIFF=$(git diff origin/main...HEAD)
-          REVIEW=$(jq -n --arg diff "$DIFF" '{
-            contents: [{
-              parts: [{
-                text: "You're a sophisticated software engineer.
+        DIFF=$(git diff origin/main...HEAD | jq -Rs .)  # JSON 안전 문자열 변환
+        REVIEW=$(curl -s -X POST "https://generativelanguage.googleapis.com/v1/models/gemini-2.0-flash-exp?key=${{secrets.GEMINI_API_KEY}}" \
+          -H "Content-Type: application/json" \
+          -d "{
+            \"contents\": [{
+              \"parts\": [{
+                \"text\": \"You're a sophisticated software engineer.
                 Please review the code changes in the following Pull Request and point out potential problems or areas for improvement only if they are significant.
                 
                 Important rules about the diff format:
@@ -46,18 +48,16 @@ jobs:
                 - Your review must be written in Korean.
                 
                 Diffs:
-                \($diff)"
+                $DIFF\"
               }]
             }]
-          }' | curl -s -X POST "https://generativelanguage.googleapis.com/v1/models/gemini-2.0-flash-exp?key=***" \
-            -H "Content-Type: application/json" \
-            -d @- | jq -r '.candidates[0].content.parts[0].text')
+          }" | jq -r '.candidates[0].content.parts[0].text')
 
-          echo "Review result:"
-          echo "$REVIEW"
+        echo "Review result:"
+        echo "$REVIEW"
 
-          # PR에 코멘트 추가
-          echo "$REVIEW" > review_comment.txt
+        # PR에 코멘트 추가
+        echo "$REVIEW" > review_comment.txt
 
       - name: Post Review Comment on PR
         uses: mshick/add-pr-comment@v2
