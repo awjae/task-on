@@ -44,21 +44,23 @@ jobs:
             -o models/tinyllama.gguf \
             https://huggingface.co/TheBloke/TinyLlama-1.1B-Chat-GGUF/resolve/main/tinyllama.gguf
 
-      # 7. Fetch the code diff from the pull request
-      - name: Fetch PR Diff
-        id: pr_diff
+      # 7. Fetch the code diff from the pull request using files instead of diff
+      - name: Fetch PR Files
+        id: pr_files
         run: |
           # GitHub CLI 로그인 시도
           echo ${{ secrets.GITHUB_TOKEN }} | gh auth login --with-token
           
-          DIFF=$(gh pr view ${{ github.event.pull_request.number }} --json diff --jq ".diff")
-          echo "DIFF=$DIFF" >> $GITHUB_ENV
+          # PR 변경 파일 목록을 가져오기
+          FILES=$(gh pr view ${{ github.event.pull_request.number }} --json files --jq ".files[].filename")
+          echo "FILES=$FILES" >> $GITHUB_ENV
 
       # 8. Run AI Code Review
       - name: Run AI Code Review
         run: |
           cd llama.cpp/build
-          ./bin/main -m ../../models/tinyllama.gguf -p "Review this code diff:\n$DIFF" > ../../review.txt
+          DIFF_TEXT="Reviewing the following files: $FILES"
+          ./bin/main -m ../../models/tinyllama.gguf -p "$DIFF_TEXT" > ../../review.txt
 
       # 9. Post AI review as a comment to the pull request
       - name: Post AI Review as Comment
