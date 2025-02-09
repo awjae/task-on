@@ -74,26 +74,13 @@ jobs:
           echo "FILES=$FILES" >> $GITHUB_ENV
           echo "Fetched files: $FILES"
 
-      - name: Debug built files
-        run: |
-          echo "Current working directory:"
-          pwd
-          echo "Checking files in build/bin/"
-          ls -l llama.cpp/build/bin/
-
-      - name: Ensure executable permissions
-        run: chmod +x $EXECUTABLE
-
-      - name: Debug executable path
-        run: |
-          echo "EXECUTABLE: $EXECUTABLE"
-          file $EXECUTABLE
-
       # 8. Run AI Code Review
       - name: Run AI Code Review
         run: |
           cd llama.cpp/build
+          chmod +x llama.cpp/build/bin/llama-save-load-state
           DIFF_TEXT="Reviewing the following files: $FILES"
+          EXECUTABLE=$(realpath llama.cpp/build/bin/llama-save-load-state)
           $EXECUTABLE -m ../../models/tinyllama.gguf -p "$DIFF_TEXT" > ../../review.txt
 
       # 9. Post AI review as a comment to the pull request
