@@ -67,7 +67,7 @@ jobs:
         run: |
           cd llama.cpp/build
           DIFF_TEXT="Reviewing the following files: $FILES"
-          ./bin/main -m ../../models/tinyllama.gguf -p "$DIFF_TEXT" > ../../review.txt
+          ./bin -m ../../models/tinyllama.gguf -p "$DIFF_TEXT" > ../../review.txt
 
       # 9. Post AI review as a comment to the pull request
       - name: Post AI Review as Comment
