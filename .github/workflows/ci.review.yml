@@ -73,15 +73,14 @@ jobs:
 
           echo "FILES=$FILES" >> $GITHUB_ENV
           echo "Fetched files: $FILES"
-          
+
       # 8. Run AI Code Review
       - name: Run AI Code Review
         run: |
           chmod +x llama.cpp/build/bin/llama-save-load-state
           DIFF_TEXT="Reviewing the following files: $FILES"
           EXECUTABLE=$(realpath llama.cpp/build/bin/llama-save-load-state)
-          OUTPUT_FILE=$(realpath ../../review.txt)  # review.txt의 절대 경로 저장
-          $EXECUTABLE -m $(realpath models/tinyllama.gguf) -p "$DIFF_TEXT" > "$OUTPUT_FILE"
+          $EXECUTABLE -m $(realpath models/tinyllama.gguf) -p "$DIFF_TEXT" > ../../review.txt
 
       # 9. Post AI review as a comment to the pull request
       - name: Post AI Review as Comment
@@ -89,7 +88,12 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # GitHub Action에서 기본 제공하는 토큰
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # GitHub CLI에 사용할 토큰
         run: |
+          # review.txt의 절대경로를 OUTPUT_FILE에 저장
+          OUTPUT_FILE=$(realpath ../../review.txt)
+          
           # 절대경로로 review.txt 파일 읽기
           COMMENT=$(cat "$OUTPUT_FILE")
+          
+          # Pull request에 댓글 달기
           gh pr comment ${{ github.event.pull_request.number }} --body "$COMMENT"
 
