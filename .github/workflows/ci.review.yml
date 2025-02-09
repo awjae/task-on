@@ -5,7 +5,7 @@ on:
     types: [opened, synchronize, reopened]
 
 permissions:
-  pull-requests: write  # PR에 대한 읽기/쓰기를 명시적으로 설정
+  pull-requests: write
 
 jobs:
   code-review:
@@ -36,11 +36,23 @@ jobs:
       - name: Build llama.cpp using CMake
         run: |
           cd llama.cpp
-          mkdir build && cd build
-          cmake ..
+          mkdir -p build && cd build
+          cmake -DCMAKE_RUNTIME_OUTPUT_DIRECTORY=bin ..
           cmake --build . --parallel
 
-      # 6. Download model from Hugging Face using the API token
+      - name: Check built executables
+        run: ls -l llama.cpp/build/bin
+
+      - name: Find executable file
+        run: |
+          EXECUTABLE=$(find llama.cpp/build/bin -type f -executable | head -n 1)
+          if [ -z "$EXECUTABLE" ]; then
+            echo "No executable found!"
+            exit 1
+          fi
+          echo "EXECUTABLE=$EXECUTABLE" >> $GITHUB_ENV
+          echo "Found executable: $EXECUTABLE"
+
       - name: Download model from Hugging Face
         run: |
           mkdir -p models
@@ -67,7 +79,7 @@ jobs:
         run: |
           cd llama.cpp/build
           DIFF_TEXT="Reviewing the following files: $FILES"
-          ./bin -m ../../models/tinyllama.gguf -p "$DIFF_TEXT" > ../../review.txt
+          $EXECUTABLE -m ../../models/tinyllama.gguf -p "$DIFF_TEXT" > ../../review.txt
 
       # 9. Post AI review as a comment to the pull request
       - name: Post AI Review as Comment
