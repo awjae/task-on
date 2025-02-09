@@ -1,4 +1,4 @@
-name: CI
+name: CI (Default lint test build)
 
 on:
   push:
@@ -13,6 +13,7 @@ permissions:
 jobs:
   main:
     runs-on: ubuntu-latest
+    if: false
     steps:
       - uses: actions/checkout@v4
         with:

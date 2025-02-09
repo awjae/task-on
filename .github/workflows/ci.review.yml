@@ -48,6 +48,9 @@ jobs:
       - name: Fetch PR Diff
         id: pr_diff
         run: |
+          # GitHub CLI 로그인 시도
+          echo ${{ secrets.GITHUB_TOKEN }} | gh auth login --with-token
+          
           DIFF=$(gh pr view ${{ github.event.pull_request.number }} --json diff --jq ".diff")
           echo "DIFF=$DIFF" >> $GITHUB_ENV
 
