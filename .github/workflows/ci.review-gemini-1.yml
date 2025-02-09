@@ -30,9 +30,9 @@ jobs:
         REVIEW=$(curl -s -X POST "https://generativelanguage.googleapis.com/v1/models/gemini-2.0-flash-exp?key=${{secrets.GEMINI_API_KEY}}" \
           -H "Content-Type: application/json" \
           -d "{
-            \"contents\": [{
-              \"parts\": [{
-                \"text\": \"You're a sophisticated software engineer.
+            'contents': [{
+              'parts': [{
+                'text': 'You're a sophisticated software engineer.
                 Please review the code changes in the following Pull Request and point out potential problems or areas for improvement only if they are significant.
                 
                 Important rules about the diff format:
@@ -48,7 +48,7 @@ jobs:
                 - Your review must be written in Korean.
                 
                 Diffs:
-                $DIFF\"
+                $DIFF'
               }]
             }]
           }" | jq -r '.candidates[0].content.parts[0].text')
