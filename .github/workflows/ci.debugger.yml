@@ -24,7 +24,7 @@ jobs:
           
           # PR 변경 파일 목록을 가져오기
           echo "Fetching files for PR #${{ github.event.pull_request.number }}..."
-          FILES=$(gh pr view 1 --json files --jq ".files[].filename")
+          FILES=$(gh pr view #1 --json files --jq ".files[].filename")
           
           # 파일 목록이 비어있는지 확인
           if [ -z "$FILES" ]; then
