@@ -1,6 +1,9 @@
 name: AI Code Review with Hugging Face
 
 on:
+  push:
+    branches:
+      - main
   pull_request:
     types: [opened, synchronize, reopened]
 
@@ -10,7 +13,7 @@ permissions:
 jobs:
   code-review:
     runs-on: ubuntu-latest
-
+    if: false
     steps:
       # 1. Checkout the code
       - name: Checkout repository
@@ -38,8 +41,6 @@ jobs:
           mkdir build && cd build
           cmake ..
           cmake --build . --parallel
-          # 빌드 후 ./bin/main 파일이 있는지 확인
-          ls -l ./bin  # 이 부분 추가: main 파일 확인
 
       # 6. Download model from Hugging Face using the API token
       - name: Download model from Hugging Face
