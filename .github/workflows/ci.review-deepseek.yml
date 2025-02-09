@@ -1,0 +1,17 @@
+name: AI PR Review
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: miladv33/deepseek-pr-review@v1.0.0
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          # Optional: custom prompt
+          custom-prompt: "Please review these changes focusing on security and performance."
+          # Optional: specify different model
+          model: "deepseek-r1:14b"
