@@ -39,7 +39,7 @@ jobs:
           cmake ..
           cmake --build . --parallel
           # 빌드 후 ./bin/main 파일이 있는지 확인
-          ls -l ./bin
+          ls -l ./bin  # 이 부분 추가: main 파일 확인
 
       # 6. Download model from Hugging Face using the API token
       - name: Download model from Hugging Face
@@ -57,6 +57,7 @@ jobs:
           echo ${{ secrets.GITHUB_TOKEN }} | gh auth login --with-token
           
           # PR 변경 파일 목록을 가져오기
+          echo "Fetching files for PR #${{ github.event.pull_request.number }}..."
           FILES=$(gh pr view ${{ github.event.pull_request.number }} --json files --jq ".files[].filename")
           
           # 파일 목록이 비어있는지 확인
@@ -66,6 +67,7 @@ jobs:
           fi
 
           echo "FILES=$FILES" >> $GITHUB_ENV
+          echo "Fetched files: $FILES"  # 추가된 디버깅 정보
 
       # 8. Run AI Code Review
       - name: Run AI Code Review
