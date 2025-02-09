@@ -27,7 +27,7 @@ jobs:
       - name: Generate Code Review with Gemini API
         run: |
           DIFF=$(git diff origin/main...HEAD)
-          REVIEW=$(curl -s -X POST "https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent?key=${{ secrets.GEMINI_API_KEY }}" \
+          REVIEW=$(curl -s -X POST "https://generativelanguage.googleapis.com/v1/models/gemini-2.0-flash-exp?key=${{ secrets.GEMINI_API_KEY }}" \
             -H "Content-Type: application/json" \
             -d "{
               'contents': [{
