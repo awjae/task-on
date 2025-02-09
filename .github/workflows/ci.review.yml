@@ -52,13 +52,10 @@ jobs:
 
       # 7. Fetch the code diff from the pull request using files instead of diff
       - name: Fetch PR Files
-        run: |
-          # GitHub CLI 로그인 시도
-          echo ${{ secrets.GITHUB_TOKEN }} | gh auth login --with-token
-          
+        run: |          
           # PR 변경 파일 목록을 가져오기
           echo "Fetching files for PR #${{ github.event.pull_request.number }}..."
-          FILES=$(gh pr view ${{ github.event.pull_request.number }} --json files --jq ".files[].filename")
+          FILES=$(git diff --name-only origin/${{ github.event.pull_request.base.ref }})
           
           # 파일 목록이 비어있는지 확인
           if [ -z "$FILES" ]; then
