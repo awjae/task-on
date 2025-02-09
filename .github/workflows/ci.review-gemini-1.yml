@@ -32,8 +32,7 @@ jobs:
             -d "{
               'contents': [{
                 'parts': [
-                  {'text': '
-                    You're a sophisticated software engineer.
+                  {'text': 'You're a sophisticated software engineer.
                     Please review the code changes in the following Pull Request and point out potential problems or areas for improvement only if they are significant.
                     Important rules about the diff format:
                     - Lines that begin with "-" are lines that have been **removed** in this Pull Request.
@@ -45,11 +44,10 @@ jobs:
                     - Do not add any review comments for trivial or non-impactful changes (e.g., variable name changes that do not affect logic).
                     - For suggestions, assign a priority (e.g., PRIORITY:HIGH, PRIORITY:MEDIUM, PRIORITY:LOW).
                     - Use type=POSITIVE only for changes that bring a clear, significant improvement to readability, performance, or maintainability. If a change is merely "not a problem," do not comment on it.
-                    - Your review must be written in ${language}.
-
+                    - Your review must be written in Korean.
                     Diffs:
-                    $DIFF}
-                  ' 
+                    $DIFF'
+                  } 
                 ]
               }]
             }" | jq -r '.candidates[0].content.parts[0].text')
