@@ -1,0 +1,9 @@
+{
+  "name": "task-on-expo",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/task-on-expo/src",
+  "projectType": "application",
+  "tags": [],
+  "// targets": "to see all targets run: nx show project task-on-expo --web",
+  "targets": {}
+}
