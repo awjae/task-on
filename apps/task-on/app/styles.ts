@@ -21,6 +21,22 @@ export const StyledPage = styled.div`
     }
   }
 
+  .header-button {
+    position: absolute;
+    right: 20px;
+    top: 20px;
+    Button {
+      min-width: 35px;
+      height: 30px;
+      padding-left: 4px; 
+      padding-right: 4px; 
+      background-color: #3498db;
+      &:hover {
+        background: #2980b9;
+      }
+    }
+  }
+
   .todo-input {
     display: flex;
     gap: 10px;
@@ -59,4 +75,15 @@ export const StyledPage = styled.div`
   .todo-list {
     /* todo-item 컴포넌트가 들어올 영역 */
   }
+`;
+
+export const ModalBox = styled.div`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 400px;
+  border: 2px solid #000;
+  padding: 4px;
+  background-color: white;
 `;
