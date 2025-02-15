@@ -1,67 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
-import styled from 'styled-components';
 import TodoItem from './_components/todo-item';
-
-// 전체 페이지 스타일 (필기노트 느낌 적용)
-const StyledPage = styled.div`
-  max-width: 480px;
-  margin: 0 auto;
-  padding: 20px;
-  background: #f6f5f0;
-  min-height: 100vh;
-  
-  .header {
-    text-align: center;
-    margin-bottom: 20px;
-    h1 {
-      font-size: 32px;
-      color: #2c3e50;
-      text-decoration: underline;
-      text-decoration-style: wavy;
-      text-decoration-color: #e74c3c;
-    }
-  }
-
-  .todo-input {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 20px;
-    
-    input {
-      flex: 1;
-      padding: 12px;
-      border: none;
-      border-bottom: 2px solid #95a5a6;
-      border-radius: 0;
-      font-size: 20px;
-      background: transparent;
-      
-      &:focus {
-        outline: none;
-        border-bottom-color: #3498db;
-      }
-    }
-
-    button {
-      padding: 8px 16px;
-      background: #3498db;
-      color: white;
-      border: none;
-      border-radius: 20px;
-      font-size: 18px;
-      cursor: pointer;
-      
-      &:hover {
-        background: #2980b9;
-      }
-    }
-  }
-
-  .todo-list {
-    /* todo-item 컴포넌트가 들어올 영역 */
-  }
-`;
+import { StyledPage } from './styles';
 
 export default function Index() {
   const [todos, setTodos] = useState<Array<{ id: number, text: string, completed: boolean }>>([]);
@@ -103,6 +43,10 @@ export default function Index() {
     <StyledPage>
       <div className="header">
         <h1>할 일</h1>
+      </div>
+
+      <div className='header-button'>
+
       </div>
 
       <div className="todo-input">

@@ -14,7 +14,7 @@ function createWindow() {
   });
 
   // 지정된 URL을 로드합니다.
-  win.loadURL('https://next-portfolio-awjaes-projects.vercel.app');
+  win.loadURL('http://localhost:3000/');
 }
 
 export default class Main {

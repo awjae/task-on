@@ -16,4 +16,4 @@ COPY apps/task-on/ ./apps/task-on/
 # 실행 명령
 CMD ["npx", "next", "start", "apps/task-on"]
 
-EXPOSE 3000
+EXPOSE 80
