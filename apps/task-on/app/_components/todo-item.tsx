@@ -1,5 +1,5 @@
-import { useState } from "react";
-import styled, { keyframes } from "styled-components";
+import { useState } from 'react';
+import styled, { keyframes } from 'styled-components';
 
 // 애니메이션 정의 (fadeIn, fadeOut)
 const fadeIn = keyframes`
@@ -48,7 +48,7 @@ const TodoItemContainer = styled.div<TodoItemContainerProps>`
 
   .todo-text {
     flex: 1;
-    
+
     &.completed {
       text-decoration: line-through;
       color: #7f8c8d;

@@ -36,8 +36,8 @@ export default [
     ],
     // Override or add rules here
     rules: {
-      'quotes': ['error', 'single'], // 쌍따옴표 사용을 강제하는 규칙 추가
-      'jsx-quotes': ['warn', 'prefer-double']
+      'quotes': ['error', 'single'],
+      'jsx-quotes': ['warn', 'prefer-double'],
     },
   },
 ];

@@ -48,15 +48,15 @@ export default function Index() {
 
   return (
     <StyledPage>
-      <div className='header'>
+      <div className="header">
         <h1>할 일</h1>
       </div>
 
-      <div className='header-button'>
+      <div className="header-button">
         <Button
           variant="contained"
           color="primary"
-          sx={{ 'span': { mr: 0 } }}
+          sx={{ 'span' : { mr: 0 } }}
           startIcon={<ShareIcon style={{ width: 20 }} />} // 아이콘 추가
           onClick={handleOpenEditKey}
         />
@@ -78,12 +78,12 @@ export default function Index() {
         </Modal>
       </div>
 
-      <div className='todo-input'>
+      <div className="todo-input">
         <input
-          type='text'
+          type="text"
           value={newTodo}
           onChange={(e) => setNewTodo(e.target.value)}
-          placeholder='할 일을 입력하세요'
+          placeholder="할 일을 입력하세요"
           onKeyDown={(e) => e.key === 'Enter' && addTodo()}
         />
         <button onClick={addTodo}>
@@ -91,7 +91,7 @@ export default function Index() {
         </button>
       </div>
 
-      <div className='todo-list'>
+      <div className="todo-list">
         {todos.map(todo => (
           <TodoItem
             key={todo.id}
