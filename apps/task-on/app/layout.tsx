@@ -46,9 +46,10 @@ export default function RootLayout({
     <html lang="ko">
       <head>
         <link
-          rel="stylesheet"
           as="style"
+          // eslint-disable-next-line max-len
           href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css"
+          rel="stylesheet"
         />
       </head>
       <body>

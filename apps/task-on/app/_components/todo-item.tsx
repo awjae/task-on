@@ -29,7 +29,7 @@ interface TodoItemContainerProps {
   children?: React.ReactNode;
 }
 
-const TodoItemContainer = styled.div<TodoItemContainerProps>`
+const TodoItemContainer = styled('div')<TodoItemContainerProps>`
   display: flex;
   align-items: center;
   padding: 5px;
@@ -84,8 +84,8 @@ export default function TodoItem({ todo, onToggle, onDeleteRequest }: {
   return (
     <TodoItemContainer removing={isRemoving}>
       <input
-        type="checkbox"
         checked={todo.completed}
+        type="checkbox"
         onChange={() => onToggle(todo.id)}
       />
       <span className={`todo-text ${todo.completed ? 'completed' : ''}`}>

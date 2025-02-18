@@ -54,21 +54,21 @@ export default function Index() {
 
       <HeaderButtonBox>
         <Button
-          variant="contained"
           color="primary"
-          sx={{ 'span' : { mr: 0 } }}
           startIcon={<ShareIcon style={{ width: 20 }} />} // 아이콘 추가
+          sx={{ 'span' : { mr: 0 } }}
+          variant="contained"
           onClick={handleOpenEditKey}
         />
-        <ShareDialog onClose={handleCloseEditKey} open={open} />
+        <ShareDialog open={open} onClose={handleCloseEditKey} />
       </HeaderButtonBox>
 
       <TodoInputBox>
         <input
+          placeholder="할 일을 입력하세요"
           type="text"
           value={newTodo}
           onChange={(e) => setNewTodo(e.target.value)}
-          placeholder="할 일을 입력하세요"
           onKeyDown={(e) => e.key === 'Enter' && addTodo()}
         />
         <button onClick={addTodo}>
@@ -81,8 +81,8 @@ export default function Index() {
           <TodoItem
             key={todo.id}
             todo={todo}
-            onToggle={toggleTodo}
             onDeleteRequest={deleteTodo}
+            onToggle={toggleTodo}
           />
         ))}
       </TodoListBox>

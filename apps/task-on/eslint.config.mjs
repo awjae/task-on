@@ -19,4 +19,18 @@ export default [
   {
     ignores: ['.next/**/*'],
   },
+  {
+    rules: {
+      'react/jsx-sort-props': ['error', {
+        'callbacksLast': true,
+        'shorthandFirst': false,
+        'shorthandLast': true,
+        'ignoreCase': true,
+        'noSortAlphabetically': false
+      }],
+      'react/jsx-indent': ['error', 2],
+      'react/jsx-indent-props': ['error', 2],
+      'max-len': ['warn', { code: 100 }],
+    }
+  }
 ];

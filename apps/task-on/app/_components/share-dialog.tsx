@@ -34,28 +34,36 @@ export function ShareDialog({
 
   return <Modal
     open={open}
-    onClose={onClose}
     closeAfterTransition
-  >
+    onClose={onClose}
+>
     <Fade in={open}>
       <ModalBox>
-        <Typography id="transition-modal-title" variant="h6" component="h2" sx={{ mb: 2, textAlign: 'center' }}>
+        <Typography
+          component="h2"
+          id="transition-modal-title"
+          sx={{ mb: 2, textAlign: 'center' }}
+          variant="h6">
           비밀번호 입력
         </Typography>
         <TextField
           id="password-input"
+          inputProps={{ maxLength: 4 }}
           label="비밀번호"
+          sx={{ mt: 2, mb: 2, width: '100%' }}
           type="password"
           value={password}
-          onChange={handlePasswordChange}
-          inputProps={{ maxLength: 4 }}
-          sx={{ mt: 2, mb: 2, width: '100%' }}
           variant="outlined"
-        />
+          onChange={handlePasswordChange}
+      />
         <Button
+          sx={{
+          width: '100%',
+          backgroundColor: '#3f51b5',
+          '&:hover': { backgroundColor: '#303f9f' }
+          }}
           variant="contained"
           onClick={handleSubmit}
-          sx={{ width: '100%', backgroundColor: '#3f51b5', '&:hover': { backgroundColor: '#303f9f' } }}
         >
           제출
         </Button>
