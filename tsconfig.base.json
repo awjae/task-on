@@ -7,9 +7,7 @@
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "importHelpers": true,
-    "lib": [
-      "ES2021"
-    ],
+    "lib": ["ES2021"],
     "module": "esnext",
     "moduleResolution": "node",
     "noFallthroughCasesInSwitch": true,
@@ -28,8 +26,5 @@
     "rootDir": ".",
     "baseUrl": "."
   },
-  "exclude": [
-    "node_modules",
-    "tmp"
-  ]
+  "exclude": ["node_modules", "tmp"]
 }

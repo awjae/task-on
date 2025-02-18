@@ -1,10 +1,10 @@
 'use client';
 import ShareIcon from '@mui/icons-material/Share'; // MUI 공유 아이콘 임포트
-import { Button, Fade, Modal, Typography } from '@mui/material'; // MUI 버튼 임포트
+import { Button } from '@mui/material'; // MUI 버튼 임포트
 import { useEffect, useState } from 'react';
 import TodoItem from './_components/todo-item';
-import { ModalBox, StyledPage } from './styles';
-
+import { Header, HeaderButtonBox, StyledPage, TodoInputBox, TodoListBox } from './styles';
+import { ShareDialog } from './_components/share-dialog';
 
 export default function Index() {
   const [todos, setTodos] = useState<Array<{ id: number, text: string, completed: boolean }>>([]);
@@ -48,11 +48,11 @@ export default function Index() {
 
   return (
     <StyledPage>
-      <div className="header">
+      <Header>
         <h1>할 일</h1>
-      </div>
+      </Header>
 
-      <div className="header-button">
+      <HeaderButtonBox>
         <Button
           variant="contained"
           color="primary"
@@ -60,25 +60,10 @@ export default function Index() {
           startIcon={<ShareIcon style={{ width: 20 }} />} // 아이콘 추가
           onClick={handleOpenEditKey}
         />
-        <Modal
-          open={open}
-          onClose={handleCloseEditKey}
-          closeAfterTransition
-        >
-          <Fade in={open}>
-            <ModalBox>
-              <Typography id="transition-modal-title" variant="h6" component="h2">
-                Text in a modal
-              </Typography>
-              <Typography id="transition-modal-description" sx={{ mt: 2 }}>
-                Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
-              </Typography>
-            </ModalBox>
-          </Fade>
-        </Modal>
-      </div>
+        <ShareDialog onClose={handleCloseEditKey} open={open} />
+      </HeaderButtonBox>
 
-      <div className="todo-input">
+      <TodoInputBox>
         <input
           type="text"
           value={newTodo}
@@ -89,9 +74,9 @@ export default function Index() {
         <button onClick={addTodo}>
           추가
         </button>
-      </div>
+      </TodoInputBox>
 
-      <div className="todo-list">
+      <TodoListBox>
         {todos.map(todo => (
           <TodoItem
             key={todo.id}
@@ -100,7 +85,7 @@ export default function Index() {
             onDeleteRequest={deleteTodo}
           />
         ))}
-      </div>
+      </TodoListBox>
     </StyledPage>
   );
 }
