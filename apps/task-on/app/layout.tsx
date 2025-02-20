@@ -1,5 +1,7 @@
+import { ThemeProvider } from '@mui/material';
 import './global.css';
-import { StyledComponentsRegistry } from './registry';
+import { AppRouterCacheProvider } from '@mui/material-nextjs/v15-appRouter';
+import { customTheme } from './_common/theme';
 
 export const metadata = {
   title: 'TaskOn - 초간단 할 일 | Super Simple Todo List',
@@ -42,18 +44,23 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+
   return (
     <html lang="ko">
       <head>
         <link
           as="style"
-          // eslint-disable-next-line max-len
+            // eslint-disable-next-line max-len
           href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css"
           rel="stylesheet"
-        />
+          />
       </head>
       <body>
-        <StyledComponentsRegistry>{children}</StyledComponentsRegistry>
+        <AppRouterCacheProvider options={{ key: 'css' }}>
+          <ThemeProvider theme={customTheme}>
+            {children}
+          </ThemeProvider>
+        </AppRouterCacheProvider>
       </body>
     </html>
   );

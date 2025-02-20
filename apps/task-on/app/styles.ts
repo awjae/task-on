@@ -1,14 +1,14 @@
-import styled from 'styled-components';
+import { styled } from '@mui/material';
 
 // 전체 페이지 스타일 (필기노트 느낌 적용)
-export const StyledPage = styled('div')`
+export const StyledPage = styled('div')(({ theme }) => `
   max-width: 480px;
   margin: 0 auto;
   padding: 20px;
-  background: #f6f5f0;
+  background: ${theme.palette.taskOn.lightYellow};
   min-height: 100vh;
   position: relative;
-`;
+`);
 
 export const Header = styled('div')`
   text-align: center;
