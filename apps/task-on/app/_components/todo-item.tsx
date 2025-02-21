@@ -1,5 +1,5 @@
+import { css, keyframes, styled } from '@mui/material';
 import { useState } from 'react';
-import styled, { keyframes } from 'styled-components';
 
 // 애니메이션 정의 (fadeIn, fadeOut)
 const fadeIn = keyframes`
@@ -29,21 +29,22 @@ interface TodoItemContainerProps {
   children?: React.ReactNode;
 }
 
-const TodoItemContainer = styled('div')<TodoItemContainerProps>`
+const TodoItemContainer = styled('div')<TodoItemContainerProps>((props) => css`
   display: flex;
   align-items: center;
   padding: 5px;
   font-size: 20px;
   border-bottom: solid 1px #bac1c2;
-  animation: ${(props) => (props.removing ? fadeOut : fadeIn)} 0.3s forwards;
+  animation: ${(props.removing ? fadeOut : fadeIn)} 0.3s forwards;
 
   input[type="checkbox"] {
     margin-right: 15px;
     width: 20px;
     height: 20px;
-    border: 2px solid #34495e;
+    border: 2px solid ${props.theme.palette.divider};
     border-radius: 3px;
     cursor: pointer;
+    accent-color: ${props.theme.palette.taskOn.lightGreen};
   }
 
   .todo-text {
@@ -58,11 +59,11 @@ const TodoItemContainer = styled('div')<TodoItemContainerProps>`
   .delete-btn {
     background: none;
     border: none;
-    color: #e74c3c;
+    color: ${props.theme.palette.error.main};
     cursor: pointer;
     font-size: 24px;
   }
-`;
+`);
 
 // 개별 할 일 아이템 컴포넌트 (삭제 애니메이션 적용)
 export default function TodoItem({ todo, onToggle, onDeleteRequest }: {

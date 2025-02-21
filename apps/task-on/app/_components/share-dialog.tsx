@@ -1,4 +1,4 @@
-import { Fade, Modal, styled, Typography, TextField, Button } from '@mui/material';
+import { Fade, Modal, styled, Typography, TextField, Button, useTheme } from '@mui/material';
 import { ChangeEvent, useState } from 'react';
 
 export const ModalBox = styled('div')`
@@ -22,6 +22,7 @@ export function ShareDialog({
   onClose: () => void;
 }) {
   const [password, setPassword] = useState('');
+  const theme = useTheme();
 
   const handlePasswordChange = (event: ChangeEvent<HTMLInputElement>) => {
     setPassword(event.target.value);
@@ -44,9 +45,10 @@ export function ShareDialog({
           id="transition-modal-title"
           sx={{ mb: 2, textAlign: 'center' }}
           variant="h6">
-          비밀번호 입력
+          공유 비밀번호 입력
         </Typography>
         <TextField
+          color="success"
           id="password-input"
           inputProps={{ maxLength: 4 }}
           label="비밀번호"
@@ -59,8 +61,8 @@ export function ShareDialog({
         <Button
           sx={{
           width: '100%',
-          backgroundColor: '#3f51b5',
-          '&:hover': { backgroundColor: '#303f9f' }
+          backgroundColor: theme.palette.taskOn.lightGreen,
+          '&:hover': { backgroundColor: theme.palette.taskOn.oliveGreen }
           }}
           variant="contained"
           onClick={handleSubmit}

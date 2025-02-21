@@ -22,7 +22,7 @@ export const Header = styled('div')`
   }
 `;
 
-export const HeaderButtonBox = styled('div')`
+export const HeaderButtonBox = styled('div')(({ theme }) => `
   position: absolute;
   right: 20px;
   top: 20px;
@@ -31,14 +31,14 @@ export const HeaderButtonBox = styled('div')`
     height: 30px;
     padding-left: 4px;
     padding-right: 4px;
-    background-color: #3498db;
+    background-color: ${theme.palette.taskOn.lightGreen};
     &:hover {
-      background: #2980b9;
+      background: ${theme.palette.taskOn.oliveGreen};
     }
   }
-`;
+`);
 
-export const TodoInputBox = styled('div')`
+export const TodoInputBox = styled('div')(({ theme }) => `
   display: flex;
   gap: 10px;
   margin-bottom: 20px;
@@ -47,20 +47,20 @@ export const TodoInputBox = styled('div')`
     flex: 1;
     padding: 12px;
     border: none;
-    border-bottom: 2px solid #95a5a6;
+    border-bottom: 2px solid ${theme.palette.divider};
     border-radius: 0;
     font-size: 20px;
     background: transparent;
 
     &:focus {
       outline: none;
-      border-bottom-color: #3498db;
+      border-bottom-color: ${theme.palette.taskOn.lightGreen};
     }
   }
 
   button {
     padding: 8px 16px;
-    background: #3498db;
+    background: ${theme.palette.taskOn.lightGreen};
     color: white;
     border: none;
     border-radius: 20px;
@@ -68,9 +68,9 @@ export const TodoInputBox = styled('div')`
     cursor: pointer;
 
     &:hover {
-      background: #2980b9;
+      background: ${theme.palette.taskOn.oliveGreen};
     }
   }
-`;
+`);
 export const TodoListBox = styled('div')`
 `;
