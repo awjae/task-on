@@ -26,12 +26,18 @@ export const HeaderButtonBox = styled('div')(({ theme }) => `
   position: absolute;
   right: 20px;
   top: 20px;
+
   Button {
     min-width: 35px;
     height: 30px;
     padding-left: 4px;
     padding-right: 4px;
     background-color: ${theme.palette.taskOn.lightGreen};
+    text-align: center;
+    & > span {
+      margin-right: 0;
+      margin-left: 0;
+    }
     &:hover {
       background: ${theme.palette.taskOn.oliveGreen};
     }

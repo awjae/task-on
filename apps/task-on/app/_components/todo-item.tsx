@@ -83,16 +83,16 @@ export default function TodoItem({ todo, onToggle, onDeleteRequest }: {
   };
 
   return (
-    <TodoItemContainer removing={isRemoving}>
+    <TodoItemContainer removing={ isRemoving }>
       <input
-        checked={todo.completed}
+        checked={ todo.completed }
         type="checkbox"
-        onChange={() => onToggle(todo.id)}
+        onChange={ () => onToggle(todo.id) }
       />
-      <span className={`todo-text ${todo.completed ? 'completed' : ''}`}>
-        {todo.text}
+      <span className={ `todo-text ${todo.completed ? 'completed' : ''}` }>
+        { todo.text }
       </span>
-      <button className="delete-btn" onClick={handleDelete}>
+      <button className="delete-btn" onClick={ handleDelete }>
         ×
       </button>
     </TodoItemContainer>

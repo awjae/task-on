@@ -31,6 +31,8 @@ export default [
       'react/jsx-indent': ['error', 2],
       'react/jsx-indent-props': ['error', 2],
       'max-len': ['warn', { code: 100 }],
+      'semi': ['error', 'always'],
+      'react/jsx-curly-spacing': ['error', { when: 'always', children: true }],
     }
   }
 ];

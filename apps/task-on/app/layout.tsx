@@ -2,6 +2,7 @@ import { ThemeProvider } from '@mui/material';
 import './global.css';
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v15-appRouter';
 import { customTheme } from './_common/theme';
+import { Toaster } from 'react-hot-toast';
 
 export const metadata = {
   title: 'TaskOn - 초간단 할 일 | Super Simple Todo List',
@@ -56,10 +57,11 @@ export default function RootLayout({
           />
       </head>
       <body>
-        <AppRouterCacheProvider options={{ key: 'css' }}>
-          <ThemeProvider theme={customTheme}>
-            {children}
+        <AppRouterCacheProvider options={ { key: 'css' } }>
+          <ThemeProvider theme={ customTheme }>
+            { children }
           </ThemeProvider>
+          <Toaster />
         </AppRouterCacheProvider>
       </body>
     </html>
