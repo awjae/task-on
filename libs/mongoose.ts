@@ -40,9 +40,8 @@ TodoSchema.pre('save', async function (next) {
 });
 
 // 🔑 비밀번호 검증 메서드
-TodoSchema.methods.compareEditKey = async function (inputKey: string) {
-  return await bcrypt.compare(inputKey, this.editKey);
+TodoSchema.methods['compareEditKey'] = async function (inputKey: string) {
+  return await bcrypt.compare(inputKey, this['editKey']);
 };
 
-const Todo = mongoose.model('Todo', TodoSchema);
-export default Todo;
+export const Todo = mongoose.model('Todo', TodoSchema);

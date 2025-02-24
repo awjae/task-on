@@ -2,11 +2,12 @@
 import FileUploadIcon from '@mui/icons-material/FileUpload';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import { Button } from '@mui/material';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import TodoItem from './_components/todo-item';
 import { Header, HeaderButtonBox, StyledPage, TodoInputBox, TodoListBox } from './styles';
 import { ShareDialog } from './_components/share-dialog';
 import { ImportDialog } from './_components/import-dialog';
+import { submitDate } from './_common/type';
 
 export default function Index() {
   const [todos, setTodos] = useState<Array<{ id: number, text: string, completed: boolean }>>([]);
@@ -46,6 +47,18 @@ export default function Index() {
     setTodos(todos.filter(todo => todo.id !== id));
   };
 
+  const handleSubmit = useCallback(async ({ uuid, password }: submitDate) => {
+    //NOTE: nextjs todo save api (params: uuid, editKey: password, content: todos)
+    await fetch('/api/todos', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ uuid, editKey: password, content: todos }),
+    });
+
+  }, [todos]);
+
   const handleOpenShareDialog = () => setShareDialogOpen(true);
   const handleCloseShareDialog = () => setShareDialogOpen(false);
 
@@ -73,7 +86,11 @@ export default function Index() {
           variant="contained"
           onClick={ handleOpenShareDialog }
         />
-        <ShareDialog open={ shareDialogOpen } onClose={ handleCloseShareDialog } />
+        <ShareDialog
+          open={ shareDialogOpen }
+          onClose={ handleCloseShareDialog }
+          onSubmit={ handleSubmit }
+        />
       </HeaderButtonBox>
 
       <TodoInputBox>

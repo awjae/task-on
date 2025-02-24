@@ -24,7 +24,10 @@
     "strict": true,
     "target": "es2021",
     "rootDir": ".",
-    "baseUrl": "."
+    "baseUrl": "./",
+    "paths": {
+      "@libs/*": ["./libs/*"]
+    }
   },
   "exclude": ["node_modules", "tmp"]
 }

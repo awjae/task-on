@@ -2,6 +2,7 @@ import { Fade, Modal, styled, Typography, TextField, Button, useTheme, Box } fro
 import { ChangeEvent, useCallback, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import toast from 'react-hot-toast';
+import { submitDate } from '../_common/type';
 
 export const ModalBox = styled('div')`
   position: absolute;
@@ -18,10 +19,12 @@ export const ModalBox = styled('div')`
 
 export function ShareDialog({
   open,
-  onClose
+  onClose,
+  onSubmit
 }: {
   open: boolean;
   onClose: () => void;
+  onSubmit: (data: submitDate) => void;
 }) {
   const [password, setPassword] = useState('');
   const theme = useTheme();
@@ -32,11 +35,13 @@ export function ShareDialog({
   };
 
   const handleSubmit = useCallback(() => {
-    console.log('비밀번호:', password);
-    const currentDomain = window.location.origin; // 현재 도메인 가져오기
-    const shareLink = `${currentDomain}/share/${uuidv4()}`;
+    const currentDomain = window.location.origin;
+    const uuid = uuidv4();
+    const shareLink = `${currentDomain}/share/${uuid}`;
     setShareURL(shareLink);
-  }, [password]);
+    localStorage.setItem('uuid', uuid);
+    onSubmit({ uuid, password });
+  }, [onSubmit, password]);
 
   const handleClickCopy = () => {
     if (!shareURL)
