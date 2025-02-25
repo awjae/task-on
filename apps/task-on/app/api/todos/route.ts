@@ -7,11 +7,56 @@ export type todoParams = {
   content: Array<{ id: number, text: string, completed: boolean }>;
 }
 
+
+export async function GET(request: Request) {
+  const { searchParams } = new URL(request.url);
+  const uuid = searchParams.get('uuid');
+
+  if (!uuid) {
+    return createResponse({
+      message: 'uuid가 필요합니다.',
+      status: 400,
+      success: false,
+    });
+  }
+
+  try {
+    await connectDB();
+
+    const todos = await Todo.find({ uuid }); // uuid로 할 일 조회
+    await disconnectDB();
+
+    if (todos.length === 0) {
+      return createResponse({
+        message: '할 일이 없습니다.',
+        status: 404,
+        success: false,
+      });
+    }
+    return createResponse({
+      status: 200,
+      success: true,
+      data: { todos },
+    });
+  } catch (error) {
+    console.error('서버 오류:', error);
+    return createResponse({
+      message: '서버 오류가 발생했습니다.',
+      status: 500,
+      success: false,
+    }); // 500 Internal Server Error
+  }
+}
+
 export async function POST(request: Request) {
   const { uuid, editKey, content }: todoParams = await request.json();
 
   if (!uuid || !editKey || !Array.isArray(content)) {
-    return createResponse('유효하지 않은 입력입니다.', false, 400);;
+    return createResponse({
+      message: '유효하지 않은 입력입니다.',
+      status: 400,
+      success: false,
+    });;
   }
 
   try {
@@ -26,8 +71,16 @@ export async function POST(request: Request) {
 
     await disconnectDB();
 
-    return createResponse('할 일이 성공적으로 저장되었습니다.', true, 201);;
+    return createResponse({
+      message: '할 일이 성공적으로 저장되었습니다.',
+      status: 201,
+      success: true,
+    });
   } catch {
-    return createResponse('서버 오류가 발생했습니다.', false, 500);
+    return createResponse({
+      message: '서버 오류가 발생했습니다.',
+      status: 500,
+      success: false,
+    });
   }
 }

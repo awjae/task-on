@@ -1,5 +1,12 @@
 import { NextResponse } from 'next/server';
 
-export const createResponse = (message: string, success: boolean, status: number) => {
-  return NextResponse.json({ message, success }, { status });
+export type responseType<T> = {
+  message?: string;
+  success: boolean;
+  status: number;
+  data?: T;
+}
+
+export const createResponse = <T>({ message, success, status, data }: responseType<T>) => {
+  return NextResponse.json({ message, success, status, data });
 };
