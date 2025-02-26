@@ -23,7 +23,7 @@ export async function GET(request: Request) {
   try {
     await connectDB();
 
-    const todos = await Todo.find({ uuid }); // uuid로 할 일 조회
+    const todos = await Todo.find({ uuid });
     await disconnectDB();
 
     if (todos.length === 0) {

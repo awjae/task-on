@@ -2,7 +2,7 @@ import { Fade, Modal, styled, Typography, TextField, Button, useTheme, Box } fro
 import { ChangeEvent, useCallback, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import toast from 'react-hot-toast';
-import { submitDate } from '../_common/type';
+import { TSubmitDate } from '../_common/type';
 
 export const ModalBox = styled('div')`
   position: absolute;
@@ -24,7 +24,7 @@ export function ShareDialog({
 }: {
   open: boolean;
   onClose: () => void;
-  onSubmit: (data: submitDate) => void;
+  onSubmit: (data: TSubmitDate) => void;
 }) {
   const [password, setPassword] = useState('');
   const theme = useTheme();

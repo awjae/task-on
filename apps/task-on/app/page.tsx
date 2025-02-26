@@ -7,44 +7,54 @@ import TodoItem from './_components/todo-item';
 import { Header, HeaderButtonBox, StyledPage, TodoInputBox, TodoListBox } from './styles';
 import { ShareDialog } from './_components/share-dialog';
 import { ImportDialog } from './_components/import-dialog';
-import { submitDate } from './_common/type';
-import { gql, useQuery } from '@apollo/client';
+import { TSubmitDate, TContent } from './_common/type';
+import { gql, useMutation, useQuery } from '@apollo/client';
 import Container from './container';
+import { v4 as uuidv4 } from 'uuid';
 
 const todosQuery = gql`
-  query readTodos {
-    todos {
+  query ReadTodos($uuid: String!) {
+    readTodos(uuid: $uuid) {
       uuid
       editKey
-      content
+      content {
+        id
+        text
+        completed
+      }
     }
+  }
+`;
+const createTodoQuery = gql`
+  mutation CreateTodo($uuid: String!, $editKey: String!, $content: [TContent]!) {
+    createTodo(uuid: $uuid, editKey: $editKey, content: $content)
   }
 `;
 
 
 export default function Index() {
-  const [todos, setTodos] = useState<Array<{ id: number, text: string, completed: boolean }>>([]);
+  const [todos, setTodos] = useState<Array<TContent>>([]);
   const [newTodo, setNewTodo] = useState('');
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
   const [importDialogOpen, setImportDialogOpen] = useState(false);
+  const [uuid, setUUID] = useState();
 
-  const { loading, data } = useQuery(todosQuery);
-
-  useEffect(() => {
-    const savedTodos = localStorage.getItem('todos');
-    if (savedTodos) {
-      setTodos(JSON.parse(savedTodos));
-    }
-  }, []);
+  const { loading, data } = useQuery(todosQuery, {
+    variables: { uuid },
+    skip: !uuid,
+  });
+  const [createTodo] = useMutation(createTodoQuery);
 
   const addTodo = () => {
     if (newTodo.trim()) {
-      setTodos([...todos, {
+      const currentTodos: TContent[] = [...todos, {
         id: Date.now(),
         text: newTodo.trim(),
         completed: false
-      }]);
+      }];
+      setTodos(currentTodos);
       setNewTodo('');
+      localStorage.setItem('todos', JSON.stringify(currentTodos));
     }
   };
 
@@ -58,16 +68,22 @@ export default function Index() {
     setTodos(todos.filter(todo => todo.id !== id));
   };
 
-  const handleSubmit = useCallback(async ({ uuid, password }: submitDate) => {
-    await fetch('/api/todos', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
+  const handleSubmit = useCallback(async ({ uuid, password }: TSubmitDate) => {
+    // await fetch('/api/todos', {
+    //   method: 'POST',
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //   },
+    //   body: JSON.stringify({ uuid, editKey: password, content: todos }),
+    // });
+    await createTodo({
+      variables: {
+        uuid,
+        editKey: password,
+        content: todos,
       },
-      body: JSON.stringify({ uuid, editKey: password, content: todos }),
     });
-
-  }, [todos]);
+  }, [createTodo, todos]);
 
   const handleOpenShareDialog = () => setShareDialogOpen(true);
   const handleCloseShareDialog = () => setShareDialogOpen(false);
@@ -76,17 +92,25 @@ export default function Index() {
   const handleCloseImportDialog = () => setImportDialogOpen(false);
 
   useEffect(() => {
-    localStorage.setItem('todos', JSON.stringify(todos));
-  }, [todos]);
-
-  useEffect(() => {
     if(!loading)
       return undefined;
-console.log(data);
-    if (data && data.todos) {
-      setTodos(prevTodos => prevTodos.concat(data.todos));
-    }
+
+    const totalTodos: string[] = [];
+
+    if (data && data.todos)
+      totalTodos.push(data.todos);
+
+    const savedTodos = localStorage.getItem('todos');
+
+    if (savedTodos)
+      totalTodos.push(...JSON.parse(savedTodos));
+
+    setTodos(totalTodos);
   }, [loading, data]);
+
+  useEffect(() => {
+    setUUID(localStorage.getItem('uuid') || uuidv4());
+  }, []);
 
   return <Container>
     <StyledPage>

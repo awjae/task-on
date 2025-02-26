@@ -22,7 +22,7 @@ export const disconnectDB = async () => {
   }
 };
 
-const TodoSchema = new mongoose.Schema({
+const todoSchema = new mongoose.Schema({
   uuid: { type: String, required: true, unique: true }, // 공유용 UUID
   content: { type: Array, required: true }, // 투두리스트 데이터 (JSON 형태)
   editKey: { type: String }, // 편집용 비밀번호 (해시 저장)
@@ -31,7 +31,7 @@ const TodoSchema = new mongoose.Schema({
 });
 
 // 🔐 편집 비밀번호 해싱 (저장 전)
-TodoSchema.pre('save', async function (next) {
+todoSchema.pre('save', async function (next) {
   if (this.isModified('editKey') && this.editKey) {
     const saltRounds = 10;
     this.editKey = await bcrypt.hash(this.editKey, saltRounds);
@@ -40,8 +40,8 @@ TodoSchema.pre('save', async function (next) {
 });
 
 // 🔑 비밀번호 검증 메서드
-TodoSchema.methods['compareEditKey'] = async function (inputKey: string) {
+todoSchema.methods['compareEditKey'] = async function (inputKey: string) {
   return await bcrypt.compare(inputKey, this['editKey']);
 };
 
-export const Todo = mongoose.model('Todo', TodoSchema);
+export const Todo = mongoose.model('todo', todoSchema);
