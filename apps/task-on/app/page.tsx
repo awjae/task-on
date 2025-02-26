@@ -8,6 +8,19 @@ import { Header, HeaderButtonBox, StyledPage, TodoInputBox, TodoListBox } from '
 import { ShareDialog } from './_components/share-dialog';
 import { ImportDialog } from './_components/import-dialog';
 import { submitDate } from './_common/type';
+import { gql, useQuery } from '@apollo/client';
+import Container from './container';
+
+const todosQuery = gql`
+  query readTodos {
+    todos {
+      uuid
+      editKey
+      content
+    }
+  }
+`;
+
 
 export default function Index() {
   const [todos, setTodos] = useState<Array<{ id: number, text: string, completed: boolean }>>([]);
@@ -15,16 +28,14 @@ export default function Index() {
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
   const [importDialogOpen, setImportDialogOpen] = useState(false);
 
+  const { loading, data } = useQuery(todosQuery);
+
   useEffect(() => {
     const savedTodos = localStorage.getItem('todos');
     if (savedTodos) {
       setTodos(JSON.parse(savedTodos));
     }
   }, []);
-
-  useEffect(() => {
-    localStorage.setItem('todos', JSON.stringify(todos));
-  }, [todos]);
 
   const addTodo = () => {
     if (newTodo.trim()) {
@@ -48,7 +59,6 @@ export default function Index() {
   };
 
   const handleSubmit = useCallback(async ({ uuid, password }: submitDate) => {
-    //NOTE: nextjs todo save api (params: uuid, editKey: password, content: todos)
     await fetch('/api/todos', {
       method: 'POST',
       headers: {
@@ -65,7 +75,20 @@ export default function Index() {
   const handleOpenImportDialog = () => setImportDialogOpen(true);
   const handleCloseImportDialog = () => setImportDialogOpen(false);
 
-  return (
+  useEffect(() => {
+    localStorage.setItem('todos', JSON.stringify(todos));
+  }, [todos]);
+
+  useEffect(() => {
+    if(!loading)
+      return undefined;
+console.log(data);
+    if (data && data.todos) {
+      setTodos(prevTodos => prevTodos.concat(data.todos));
+    }
+  }, [loading, data]);
+
+  return <Container>
     <StyledPage>
       <Header>
         <h1>할 일</h1>
@@ -117,5 +140,5 @@ export default function Index() {
         )) }
       </TodoListBox>
     </StyledPage>
-  );
+  </Container>;
 }
