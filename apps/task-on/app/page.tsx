@@ -31,19 +31,16 @@ const createTodoQuery = gql`
   }
 `;
 
-
 export default function Index() {
   const [todos, setTodos] = useState<Array<TContent>>([]);
   const [newTodo, setNewTodo] = useState('');
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
   const [importDialogOpen, setImportDialogOpen] = useState(false);
-  const [uuid, setUUID] = useState();
+  const [uuid, setUUID] = useState<string>();
 
-  const { loading, data } = useQuery(todosQuery, {
-    variables: { uuid },
-    skip: !uuid,
-  });
+  const { loading, data } = useQuery(todosQuery, { variables: { uuid }, skip: !uuid });
   const [createTodo] = useMutation(createTodoQuery);
+
 
   const addTodo = () => {
     if (newTodo.trim()) {
@@ -69,13 +66,6 @@ export default function Index() {
   };
 
   const handleSubmit = useCallback(async ({ uuid, password }: TSubmitDate) => {
-    // await fetch('/api/todos', {
-    //   method: 'POST',
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //   },
-    //   body: JSON.stringify({ uuid, editKey: password, content: todos }),
-    // });
     await createTodo({
       variables: {
         uuid,
@@ -95,7 +85,7 @@ export default function Index() {
     if(!loading)
       return undefined;
 
-    const totalTodos: string[] = [];
+    const totalTodos: TContent[] = [];
 
     if (data && data.todos)
       totalTodos.push(data.todos);

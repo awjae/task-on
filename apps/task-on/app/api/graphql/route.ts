@@ -3,6 +3,7 @@ import { ApolloServer } from '@apollo/server';
 import { NextRequest } from 'next/server';
 import { gql } from 'graphql-tag';
 import { TContent } from '../../_common/type';
+import { connectDB, disconnectDB, Todo } from '@libs/mongoose';
 
 const typeDefs = gql`
   type TTodos {

@@ -7,7 +7,7 @@ export type todoParams = {
   content: Array<{ id: number, text: string, completed: boolean }>;
 }
 
-
+/** @deprecated nextjs vanilla api 방식 */
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const uuid = searchParams.get('uuid');
