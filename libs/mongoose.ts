@@ -44,4 +44,4 @@ todoSchema.methods['compareEditKey'] = async function (inputKey: string) {
   return await bcrypt.compare(inputKey, this['editKey']);
 };
 
-export const Todo = mongoose.model('todo', todoSchema);
+export const Todo =  mongoose.models['Todo'] || mongoose.model('todo', todoSchema);
