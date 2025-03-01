@@ -1,16 +1,26 @@
-import { app, BrowserWindow } from 'electron';
+import { app, BrowserWindow, screen } from 'electron';
 import App from './app/app';
 import ElectronEvents from './app/events/electron.events';
 import SquirrelEvents from './app/events/squirrel.events';
 
 function createWindow() {
+  const workAreaSize = screen.getPrimaryDisplay().workAreaSize;
+  const width = Math.min(320, workAreaSize.width || 320);
+  const height = Math.min(420, workAreaSize.height || 420);
   const win = new BrowserWindow({
-    width: 800,
-    height: 600,
+    width,
+    height,
+    resizable: false,
+    frame: false,
+    titleBarStyle: 'hidden',
+    show: true,
     webPreferences: {
+      contextIsolation: true,
+      backgroundThrottling: false,
+      nodeIntegrationInWorker: true,
       nodeIntegration: false,
-      contextIsolation: true
-    }
+      devTools: true,
+    },
   });
 
   // 지정된 URL을 로드합니다.
@@ -31,7 +41,7 @@ export default class Main {
   }
 
   static bootstrapApp() {
-    App.main(app, BrowserWindow);
+    // App.main(app, BrowserWindow);
     createWindow();
   }
 

@@ -7,14 +7,14 @@ import { format } from 'url';
 export default class App {
   // Keep a global reference of the window object, if you don't, the window will
   // be closed automatically when the JavaScript object is garbage collected.
-  static mainWindow: Electron.BrowserWindow;
+  static mainWindow: Electron.BrowserWindow | null;
   static application: Electron.App;
-  static BrowserWindow;
+  static BrowserWindow: typeof Electron.BrowserWindow;
 
   public static isDevelopmentMode() {
     const isEnvironmentSet: boolean = 'ELECTRON_IS_DEV' in process.env;
     const getFromEnvironment: boolean =
-      parseInt(process.env.ELECTRON_IS_DEV, 10) === 1;
+      parseInt(process.env['ELECTRON_IS_DEV'] || '0', 10) === 1;
 
     return isEnvironmentSet ? getFromEnvironment : !environment.production;
   }
@@ -32,8 +32,8 @@ export default class App {
     App.mainWindow = null;
   }
 
-  private static onRedirect(event: any, url: string) {
-    if (url !== App.mainWindow.webContents.getURL()) {
+  private static onRedirect(event: Electron.Event, url: string) {
+    if (url !== App.mainWindow?.webContents.getURL()) {
       // this is a normal external redirect, open it in a new browser window
       event.preventDefault();
       shell.openExternal(url);
@@ -60,26 +60,30 @@ export default class App {
 
   private static initMainWindow() {
     const workAreaSize = screen.getPrimaryDisplay().workAreaSize;
-    const width = Math.min(1280, workAreaSize.width || 1280);
-    const height = Math.min(720, workAreaSize.height || 720);
-
+    const width = Math.min(320, workAreaSize.width || 320);
+    const height = Math.min(420, workAreaSize.height || 420);
     // Create the browser window.
     App.mainWindow = new BrowserWindow({
-      width: width,
-      height: height,
-      show: false,
+      width,
+      height,
+      resizable: false,
+      frame: false,
+      titleBarStyle: 'hidden',
+      show: true,
       webPreferences: {
         contextIsolation: true,
         backgroundThrottling: false,
+        nodeIntegrationInWorker: true,
+        nodeIntegration: false,
+        devTools: true,
         preload: join(__dirname, 'main.preload.js'),
       },
     });
     App.mainWindow.setMenu(null);
-    App.mainWindow.center();
 
     // if main window is ready to show, close the splash window and show the main window
     App.mainWindow.once('ready-to-show', () => {
-      App.mainWindow.show();
+      App.mainWindow?.show();
     });
 
     // handle all external redirects in a new browser window
@@ -100,9 +104,9 @@ export default class App {
   private static loadMainWindow() {
     // load the index.html of the app.
     if (!App.application.isPackaged) {
-      App.mainWindow.loadURL(`http://localhost:${rendererAppPort}`);
+      App.mainWindow?.loadURL(`http://localhost:${rendererAppPort}`);
     } else {
-      App.mainWindow.loadURL(
+      App.mainWindow?.loadURL(
         format({
           pathname: join(__dirname, '..', rendererAppName, 'index.html'),
           protocol: 'file:',
@@ -121,6 +125,8 @@ export default class App {
     App.BrowserWindow = browserWindow;
     App.application = app;
 
+    //TODO: 각종 이벤트가 뒤늦게 등록돼서 올바르게 initialize 되지않음
+    //대체 왜 보일러 플레이트에 제대로 동작하지 않는 코드를?..
     App.application.on('window-all-closed', App.onWindowAllClosed); // Quit when all windows are closed.
     App.application.on('ready', App.onReady); // App is ready to load data
     App.application.on('activate', App.onActivate); // App is activated
