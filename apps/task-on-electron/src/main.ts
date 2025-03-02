@@ -37,6 +37,10 @@ export default class Main {
         Main.bootstrapApp();
         Main.bootstrapAppEvents();
       });
+      app.setLoginItemSettings({
+        openAtLogin: true, // 로그인 시 실행
+        path: app.getPath('exe'), // 실행할 파일 경로
+      });
     }
   }
 

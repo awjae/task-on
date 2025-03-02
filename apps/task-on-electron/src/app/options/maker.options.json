@@ -1,3 +1,18 @@
 {
-  "$schema": "../../../../../node_modules/nx-electron/src/validation/maker.schema.json"
+  "$schema": "../../../../../node_modules/nx-electron/src/validation/maker.schema.json",
+  "appId": "taskOn",
+  "copyright": "Copyright © year awjae",
+  "productName": "taskOn",
+  "artifactName": "taskon-${version}-${os}-${arch}.${ext}",
+  "extraMetadata": {
+    "version": "0.0.1"
+  },
+  "win": {
+    "icon": "apps/task-on-electron/resources/task-on-icon.ico",
+    "target": "nsis"
+  },
+  "mac": {
+    "icon": "apps/task-on-electron/resources/task-on-icon.icns",
+    "target": "dmg"
+  }
 }
