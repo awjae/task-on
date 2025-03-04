@@ -2,7 +2,7 @@ import { startServerAndCreateNextHandler } from '@as-integrations/next';
 import { ApolloServer } from '@apollo/server';
 import { NextRequest } from 'next/server';
 import { gql } from 'graphql-tag';
-import { TContent } from '../../_common/type';
+import { IContent } from '../../_common/type';
 import { connectDB, disconnectDB, Todo } from '@libs/mongoose';
 
 const typeDefs = gql`
@@ -46,7 +46,7 @@ const resolvers = {
     createTodo: async ({
       uuid, editKey, content
      }: {
-      uuid: string; editKey: string; content: TContent[];
+      uuid: string; editKey: string; content: IContent[];
     }) => {
       await connectDB();
       const newTodo = new Todo({ uuid, editKey, content });

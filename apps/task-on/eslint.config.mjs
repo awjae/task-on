@@ -33,6 +33,7 @@ export default [
       'max-len': ['warn', { code: 100 }],
       'semi': ['error', 'always'],
       'react/jsx-curly-spacing': ['error', { when: 'always', children: true }],
+      '@typescript-eslint/consistent-type-definitions': ['warn', 'interface'],
     }
   }
 ];

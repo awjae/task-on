@@ -1,7 +1,7 @@
 import { connectDB, disconnectDB, Todo } from '@libs/mongoose';
 import { createResponse } from '../_utils/reponse';
 
-export type TTodoParams = {
+export interface ITodoParams {
   uuid: string;
   editKey: string;
   content: Array<{ id: number, text: string, completed: boolean }>;
@@ -48,7 +48,7 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
-  const { uuid, editKey, content }: TTodoParams = await request.json();
+  const { uuid, editKey, content }: ITodoParams = await request.json();
 
   if (!uuid || !editKey || !Array.isArray(content)) {
     return createResponse({
