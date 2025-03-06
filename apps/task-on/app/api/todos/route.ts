@@ -12,26 +12,26 @@ export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const uuid = searchParams.get('uuid');
 
-  if (!uuid) {
+  if (!uuid) 
     return createResponse({
       message: 'uuid가 필요합니다.',
       status: 400,
       success: false,
     });
-  }
+  
 
   try {
     await connectDB();
     const todos = await Todo.find({ uuid });
     await disconnectDB();
 
-    if (todos.length === 0) {
+    if (todos.length === 0) 
       return createResponse({
         message: '할 일이 없습니다.',
         status: 404,
         success: false,
       });
-    }
+    
     return createResponse({
       status: 200,
       success: true,

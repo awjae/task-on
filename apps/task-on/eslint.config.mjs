@@ -34,6 +34,7 @@ export default [
       'semi': ['error', 'always'],
       'react/jsx-curly-spacing': ['error', { when: 'always', children: true }],
       '@typescript-eslint/consistent-type-definitions': ['warn', 'interface'],
+      'curly': ['warn', 'multi'],
     }
   }
 ];

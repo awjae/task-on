@@ -7,10 +7,12 @@ import TodoItem from './_components/todo-item';
 import { Header, HeaderButtonBox, StyledPage, TodoInputBox, TodoListBox } from './styles';
 import { ShareDialog } from './_components/share-dialog';
 import { ImportDialog } from './_components/import-dialog';
-import { TSubmitDate, TContent } from './_common/type';
+import { IContent, ISubmitDate } from './_common/type';
 import { gql, useMutation, useQuery } from '@apollo/client';
 import Container from './container';
+import useLocalStorageState from 'use-local-storage-state';
 import { v4 as uuidv4 } from 'uuid';
+import toast from 'react-hot-toast';
 
 const todosQuery = gql`
   query ReadTodos($uuid: String!) {
@@ -32,26 +34,32 @@ const createTodoQuery = gql`
 `;
 
 export default function Index() {
-  const [todos, setTodos] = useState<Array<TContent>>([]);
+  const [todos, setTodos] = useLocalStorageState<Array<IContent>>('todos', {
+    defaultValue: typeof window !== 'undefined' && localStorage.getItem('todos') ?
+      JSON.parse(localStorage.getItem('todos') || '[]') : [],
+    defaultServerValue: [],
+  });
+  const [uuid] = useLocalStorageState('uuid', {
+    defaultValue: typeof window !== 'undefined' && localStorage.getItem('uuid') || uuidv4()
+  });
   const [newTodo, setNewTodo] = useState('');
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
   const [importDialogOpen, setImportDialogOpen] = useState(false);
-  const [uuid, setUUID] = useState<string>();
 
+  //TODO: gql data any 타입이다. 이건 뭔가 이상해.
   const { loading, data } = useQuery(todosQuery, { variables: { uuid }, skip: !uuid });
   const [createTodo] = useMutation(createTodoQuery);
 
 
   const addTodo = () => {
     if (newTodo.trim()) {
-      const currentTodos: TContent[] = [...todos, {
+      const currentTodos: IContent[] = [...todos, {
         id: Date.now(),
         text: newTodo.trim(),
         completed: false
       }];
       setTodos(currentTodos);
       setNewTodo('');
-      localStorage.setItem('todos', JSON.stringify(currentTodos));
     }
   };
 
@@ -65,13 +73,16 @@ export default function Index() {
     setTodos(todos.filter(todo => todo.id !== id));
   };
 
-  const handleSubmit = useCallback(async ({ uuid, password }: TSubmitDate) => {
+  const handleSubmit = useCallback(async ({ uuid, password }: ISubmitDate) => {
     await createTodo({
       variables: {
         uuid,
         editKey: password,
         content: todos,
       },
+    }).catch(error => {
+      console.error(error);
+      toast.error('서버 에러. 잠시 후, 다시 시도해주세요.');
     });
   }, [createTodo, todos]);
 
@@ -85,22 +96,12 @@ export default function Index() {
     if(!loading)
       return undefined;
 
-    const totalTodos: TContent[] = [];
+    if (!data?.todos)
+      return undefined;
 
-    if (data && data.todos)
-      totalTodos.push(data.todos);
+    setTodos(prev => [...prev, ...data.todos]);
 
-    const savedTodos = localStorage.getItem('todos');
-
-    if (savedTodos)
-      totalTodos.push(...JSON.parse(savedTodos));
-
-    setTodos(totalTodos);
-  }, [loading, data]);
-
-  useEffect(() => {
-    setUUID(localStorage.getItem('uuid') || uuidv4());
-  }, []);
+  }, [loading, data, setTodos]);
 
   return <Container>
     <StyledPage>
