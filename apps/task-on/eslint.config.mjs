@@ -17,7 +17,7 @@ export default [
   ...baseConfig,
   ...nx.configs['flat/react-typescript'],
   {
-    ignores: ['.next/**/*'],
+    ignores: ['.next/**/*', '**/graphql-codegen'],
   },
   {
     rules: {

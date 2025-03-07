@@ -6,7 +6,7 @@ import { IContent } from '../../_common/type';
 import { connectDB, disconnectDB, Todo } from '@libs/mongoose';
 
 const typeDefs = gql`
-  type TTodos {
+  type TTodoList {
     uuid: String!
     editKey: String!
     content: [TContent!]!
@@ -18,24 +18,24 @@ const typeDefs = gql`
     completed: Boolean!
   }
 
-  type Query {
-    readTodos(uuid: String!): [TTodos]
-  }
-
-  type Mutation {
-    createTodo(uuid: String!, editKey: String!, content: [ContentInput!]!): String
-  }
-
   input ContentInput {
     id: Int!
     text: String!
     completed: Boolean!
   }
+
+  type Query {
+    readTodo(uuid: String!): [TTodoList]
+  }
+
+  type Mutation {
+    createTodo(uuid: String!, editKey: String!, content: [ContentInput!]!): String
+  }
 `;
 
 const resolvers = {
   Query: {
-    readTodos: async ({ uuid }: { uuid: string }) => {
+    readTodo: async (_, { uuid }: { uuid: string }) => {
       await connectDB();
       const todos = await Todo.find({ uuid });
       await disconnectDB();
@@ -48,6 +48,7 @@ const resolvers = {
      }: {
       uuid: string; editKey: string; content: IContent[];
     }) => {
+      console.log('createTodoTodos : ', uuid);
       await connectDB();
       const newTodo = new Todo({ uuid, editKey, content });
       await newTodo.save();
@@ -60,10 +61,13 @@ const resolvers = {
 const server = new ApolloServer({
   typeDefs,
   resolvers,
+  introspection: true,
 });
 
 const handler = startServerAndCreateNextHandler<NextRequest>(server, {
-  context: async req => ({ req }),
+  context: async req => {
+    return ({ req });
+  },
 });
 
 export { handler as GET, handler as POST };

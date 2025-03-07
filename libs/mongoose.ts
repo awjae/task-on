@@ -1,3 +1,4 @@
+import { IContent } from 'apps/task-on/app/_common/type';
 import bcrypt from 'bcrypt';
 import mongoose from 'mongoose';
 
@@ -44,4 +45,12 @@ todoSchema.methods['compareEditKey'] = async function (inputKey: string) {
   return await bcrypt.compare(inputKey, this['editKey']);
 };
 
-export const Todo = mongoose.model('todo', todoSchema);
+interface ITodo extends Document {
+  uuid: string;
+  content: IContent[];
+  createdAt: Date;
+  editKey?: string | null;
+  expiresAt?: Date | null;
+}
+
+export const Todo = mongoose.models['todo'] as mongoose.Model<ITodo> || mongoose.model<ITodo>('todo', todoSchema);

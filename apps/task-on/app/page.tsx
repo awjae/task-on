@@ -13,10 +13,11 @@ import Container from './container';
 import useLocalStorageState from 'use-local-storage-state';
 import { v4 as uuidv4 } from 'uuid';
 import toast from 'react-hot-toast';
+import { ReadTodoQuery, ReadTodoQueryVariables } from '../graphql-codegen/generated';
 
 const todosQuery = gql`
-  query ReadTodos($uuid: String!) {
-    readTodos(uuid: $uuid) {
+  query ReadTodo($uuid: String!) {
+    readTodo(uuid: $uuid) {
       uuid
       editKey
       content {
@@ -28,7 +29,7 @@ const todosQuery = gql`
   }
 `;
 const createTodoQuery = gql`
-  mutation CreateTodo($uuid: String!, $editKey: String!, $content: [TContent]!) {
+  mutation CreateTodo($uuid: String!, $editKey: String!, $content: [ContentInput!]!) {
     createTodo(uuid: $uuid, editKey: $editKey, content: $content)
   }
 `;
@@ -39,17 +40,23 @@ export default function Index() {
       JSON.parse(localStorage.getItem('todos') || '[]') : [],
     defaultServerValue: [],
   });
+  const isClient = typeof window !== 'undefined';
+
   const [uuid] = useLocalStorageState('uuid', {
-    defaultValue: typeof window !== 'undefined' && localStorage.getItem('uuid') || uuidv4()
+    defaultValue: isClient && localStorage.getItem('uuid') || uuidv4()
   });
+
   const [newTodo, setNewTodo] = useState('');
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
   const [importDialogOpen, setImportDialogOpen] = useState(false);
 
-  //TODO: gql data any 타입이다. 이건 뭔가 이상해.
-  const { loading, data } = useQuery(todosQuery, { variables: { uuid }, skip: !uuid });
+  console.log(uuid);
+  const { loading, data } = useQuery<ReadTodoQuery, ReadTodoQueryVariables>(
+    todosQuery, { variables: { uuid }, skip: !isClient || !uuid }
+  );
+  console.log('data?.readTodo : ', data?.readTodo);
   const [createTodo] = useMutation(createTodoQuery);
-
+  console.log('datadata : ', data);
 
   const addTodo = () => {
     if (newTodo.trim()) {
@@ -93,9 +100,9 @@ export default function Index() {
   const handleCloseImportDialog = () => setImportDialogOpen(false);
 
   useEffect(() => {
-    if(!loading)
+    console.log(data);
+    if(!loading || !data)
       return undefined;
-
     if (!data?.todos)
       return undefined;
 
