@@ -19,7 +19,7 @@ export type Scalars = {
 
 export type ContentInput = {
   completed: Scalars['Boolean']['input'];
-  id: Scalars['Int']['input'];
+  id: Scalars['Float']['input'];
   text: Scalars['String']['input'];
 };
 
@@ -37,7 +37,7 @@ export type MutationCreateTodoArgs = {
 
 export type Query = {
   __typename?: 'Query';
-  readTodo?: Maybe<Array<Maybe<TTodoList>>>;
+  readTodo: TTodoList;
 };
 
 
@@ -48,7 +48,7 @@ export type QueryReadTodoArgs = {
 export type TContent = {
   __typename?: 'TContent';
   completed: Scalars['Boolean']['output'];
-  id: Scalars['Int']['output'];
+  id: Scalars['Float']['output'];
   text: Scalars['String']['output'];
 };
 
@@ -64,7 +64,7 @@ export type ReadTodoQueryVariables = Exact<{
 }>;
 
 
-export type ReadTodoQuery = { __typename?: 'Query', readTodo?: Array<{ __typename?: 'TTodoList', uuid: string, editKey: string, content: Array<{ __typename?: 'TContent', id: number, text: string, completed: boolean }> } | null> | null };
+export type ReadTodoQuery = { __typename?: 'Query', readTodo: { __typename?: 'TTodoList', uuid: string, editKey: string, content: Array<{ __typename?: 'TContent', id: number, text: string, completed: boolean }> } };
 
 export type CreateTodoMutationVariables = Exact<{
   uuid: Scalars['String']['input'];

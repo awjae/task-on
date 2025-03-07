@@ -2,7 +2,8 @@ import { Fade, Modal, styled, Typography, TextField, Button, useTheme, Box } fro
 import { ChangeEvent, useCallback, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import toast from 'react-hot-toast';
-import { TSubmitDate } from '../_common/type';
+import { ISubmitDate } from '../_common/type';
+import useLocalStorageState from 'use-local-storage-state';
 
 export const ModalBox = styled('div')`
   position: absolute;
@@ -24,11 +25,16 @@ export function ShareDialog({
 }: {
   open: boolean;
   onClose: () => void;
-  onSubmit: (data: TSubmitDate) => void;
+  onSubmit: (data: ISubmitDate) => void;
 }) {
   const [password, setPassword] = useState('');
   const theme = useTheme();
-  const [shareURL, setShareURL] = useState<string|undefined>(undefined);
+  const [uuid, setUUID] = useLocalStorageState('uuid', {
+    defaultValue: localStorage.getItem('uuid')
+  });
+  const [shareURL, setShareURL] = useState<string|undefined>(() => {
+    return uuid ? `${window.location.origin}/share/${uuid}` : undefined;
+  });
 
   const handlePasswordChange = (event: ChangeEvent<HTMLInputElement>) => {
     setPassword(event.target.value);
@@ -39,14 +45,17 @@ export function ShareDialog({
     const uuid = uuidv4();
     const shareLink = `${currentDomain}/share/${uuid}`;
     setShareURL(shareLink);
-    localStorage.setItem('uuid', uuid);
+    setUUID(uuid);
     onSubmit({ uuid, password });
-  }, [onSubmit, password]);
+  }, [onSubmit, password, setUUID]);
 
   const handleClickCopy = () => {
     if (!shareURL)
       return undefined;
 
+    const newUUID = uuid ?? uuidv4();
+    setUUID(newUUID);
+    onSubmit({ uuid: newUUID, password });
     navigator.clipboard.writeText(shareURL);
     toast.success('링크가 클립보드에 복사되었습니다!');
   };
@@ -58,7 +67,7 @@ export function ShareDialog({
   >
     <Fade in={ open }>
       <ModalBox>
-        { !shareURL && <>
+        { !uuid && <>
           <Typography
             component="h2"
             id="transition-modal-title"
@@ -89,7 +98,7 @@ export function ShareDialog({
             제출
           </Button>
         </> }
-        { shareURL && <>
+        { uuid && <>
           <Box
             sx={ {
               backgroundColor: theme.palette.grey[200],

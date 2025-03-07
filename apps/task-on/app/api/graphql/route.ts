@@ -13,19 +13,19 @@ const typeDefs = gql`
   }
 
   type TContent {
-    id: Int!
+    id: Float!
     text: String!
     completed: Boolean!
   }
 
   input ContentInput {
-    id: Int!
+    id: Float!
     text: String!
     completed: Boolean!
   }
 
   type Query {
-    readTodo(uuid: String!): [TTodoList]
+    readTodo(uuid: String!): TTodoList!
   }
 
   type Mutation {
@@ -35,20 +35,19 @@ const typeDefs = gql`
 
 const resolvers = {
   Query: {
-    readTodo: async (_, { uuid }: { uuid: string }) => {
+    readTodo: async (_: unknown, { uuid }: { uuid: string }) => {
       await connectDB();
       const todos = await Todo.find({ uuid });
       await disconnectDB();
-      return todos;
+      return todos ?? [];
     },
   },
   Mutation: {
-    createTodo: async ({
+    createTodo: async (_: unknown, {
       uuid, editKey, content
      }: {
       uuid: string; editKey: string; content: IContent[];
     }) => {
-      console.log('createTodoTodos : ', uuid);
       await connectDB();
       const newTodo = new Todo({ uuid, editKey, content });
       await newTodo.save();

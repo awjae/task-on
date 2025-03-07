@@ -11,7 +11,6 @@ import { IContent, ISubmitDate } from './_common/type';
 import { gql, useMutation, useQuery } from '@apollo/client';
 import Container from './container';
 import useLocalStorageState from 'use-local-storage-state';
-import { v4 as uuidv4 } from 'uuid';
 import toast from 'react-hot-toast';
 import { ReadTodoQuery, ReadTodoQueryVariables } from '../graphql-codegen/generated';
 
@@ -43,20 +42,17 @@ export default function Index() {
   const isClient = typeof window !== 'undefined';
 
   const [uuid] = useLocalStorageState('uuid', {
-    defaultValue: isClient && localStorage.getItem('uuid') || uuidv4()
+    defaultValue: isClient && localStorage.getItem('uuid') || undefined
   });
 
   const [newTodo, setNewTodo] = useState('');
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
   const [importDialogOpen, setImportDialogOpen] = useState(false);
 
-  console.log(uuid);
   const { loading, data } = useQuery<ReadTodoQuery, ReadTodoQueryVariables>(
     todosQuery, { variables: { uuid }, skip: !isClient || !uuid }
   );
-  console.log('data?.readTodo : ', data?.readTodo);
   const [createTodo] = useMutation(createTodoQuery);
-  console.log('datadata : ', data);
 
   const addTodo = () => {
     if (newTodo.trim()) {
@@ -100,15 +96,17 @@ export default function Index() {
   const handleCloseImportDialog = () => setImportDialogOpen(false);
 
   useEffect(() => {
-    console.log(data);
     if(!loading || !data)
       return undefined;
-    if (!data?.todos)
+    if (!data?.readTodo)
       return undefined;
 
-    setTodos(prev => [...prev, ...data.todos]);
+    const { content } = data.readTodo;
+    const originIds = todos.map(todo => todo.id);
+    const filteredTodo = content.filter(todo => !originIds.includes(todo.id));
+    setTodos(prev => prev.concat(filteredTodo));
 
-  }, [loading, data, setTodos]);
+  }, [loading, data, setTodos, todos]);
 
   return <Container>
     <StyledPage>
