@@ -10,8 +10,8 @@ export default function App() {
       <StatusBar barStyle="dark-content" />
       <SafeAreaView style={{ flex: 1 }}>
         <WebView
-          source={{ uri: 'http://localhost:3000/' }} // 웹뷰로 URL 열기
-          style={{ flex: 1 }} // 웹뷰 스타일 설정
+          source={{ uri: 'http://localhost:3000/' }}
+          style={{ flex: 1 }}
         />
       </SafeAreaView>
     </>

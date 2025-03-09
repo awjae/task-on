@@ -88,9 +88,9 @@ export function ShareDialog({
           />
           <Button
             sx={ {
-            width: '100%',
-            backgroundColor: theme.palette.taskOn.lightGreen,
-            '&:hover': { backgroundColor: theme.palette.taskOn.oliveGreen }
+              width: '100%',
+              backgroundColor: theme.palette.taskOn.lightGreen,
+              '&:hover': { backgroundColor: theme.palette.taskOn.oliveGreen }
             } }
             variant="contained"
             onClick={ handleSubmit }
