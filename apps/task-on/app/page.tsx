@@ -42,15 +42,15 @@ const updateTodoQuery = gql`
 `;
 
 export default function Index() {
+  const isClient = typeof window !== 'undefined';
   const [todos, setTodos] = useLocalStorageState<Array<IContent>>('todos', {
-    defaultValue: typeof window !== 'undefined' && localStorage.getItem('todos') ?
+    defaultValue: isClient && localStorage.getItem('todos') ?
       JSON.parse(localStorage.getItem('todos') || '[]') : [],
     defaultServerValue: [],
   });
-  const isClient = typeof window !== 'undefined';
-
-  const [uuid] = useLocalStorageState('uuid', {
-    defaultValue: isClient && localStorage.getItem('uuid') || undefined
+  const [uuid] = useLocalStorageState<string>('uuid', {
+    defaultValue: isClient ? (localStorage.getItem('uuid') ?? '') : '',
+    defaultServerValue: '',
   });
 
   const [newTodo, setNewTodo] = useState('');
@@ -58,7 +58,7 @@ export default function Index() {
   const [importDialogOpen, setImportDialogOpen] = useState(false);
 
   const { loading, data } = useQuery<ReadTodoQuery, ReadTodoQueryVariables>(
-    todosQuery, { variables: { uuid }, skip: !isClient || !uuid }
+    todosQuery, { variables: { uuid }, skip: !uuid }
   );
   const [createTodo] =
     useMutation<CreateTodoMutation, CreateTodoMutationVariables>(createTodoQuery);
@@ -144,8 +144,8 @@ export default function Index() {
         />
         <ShareDialog
           open={ shareDialogOpen }
-          onClose={ handleCloseShareDialog }
-          onSubmit={ handleSubmit }
+          onCloseAction={ handleCloseShareDialog }
+          onSubmitAction={ handleSubmit }
         />
       </HeaderButtonBox>
 

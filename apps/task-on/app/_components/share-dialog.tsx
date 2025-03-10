@@ -1,3 +1,4 @@
+'use client';
 import { Fade, Modal, styled, Typography, TextField, Button, useTheme, Box } from '@mui/material';
 import { ChangeEvent, useCallback, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
@@ -20,17 +21,19 @@ export const ModalBox = styled('div')`
 
 export function ShareDialog({
   open,
-  onClose,
-  onSubmit
+  onCloseAction,
+  onSubmitAction
 }: {
   open: boolean;
-  onClose: () => void;
-  onSubmit: (data: ISubmitDate) => void;
+  onCloseAction: () => void;
+  onSubmitAction: (data: ISubmitDate) => void;
 }) {
+  const isClient = typeof window !== 'undefined';
   const [password, setPassword] = useState('');
   const theme = useTheme();
   const [uuid, setUUID] = useLocalStorageState('uuid', {
-    defaultValue: localStorage.getItem('uuid')
+    defaultValue: isClient ? (localStorage.getItem('uuid') ?? '') : '',
+    defaultServerValue: '',
   });
   const [shareURL, setShareURL] = useState<string|undefined>(() => {
     return uuid ? `${window.location.origin}/share/${uuid}` : undefined;
@@ -46,8 +49,8 @@ export function ShareDialog({
     const shareLink = `${currentDomain}/share/${uuid}`;
     setShareURL(shareLink);
     setUUID(uuid);
-    onSubmit({ uuid, password });
-  }, [onSubmit, password, setUUID]);
+    onSubmitAction({ uuid, password });
+  }, [onSubmitAction, password, setUUID]);
 
   const handleClickCopy = () => {
     if (!shareURL)
@@ -55,7 +58,7 @@ export function ShareDialog({
 
     const newUUID = uuid ?? uuidv4();
     setUUID(newUUID);
-    onSubmit({ uuid: newUUID, password });
+    onSubmitAction({ uuid: newUUID, password });
     navigator.clipboard.writeText(shareURL);
     toast.success('링크가 클립보드에 복사되었습니다!');
   };
@@ -63,7 +66,7 @@ export function ShareDialog({
   return <Modal
     open={ open }
     closeAfterTransition
-    onClose={ onClose }
+    onClose={ onCloseAction }
   >
     <Fade in={ open }>
       <ModalBox>
