@@ -68,7 +68,7 @@ const TodoItemContainer = styled('div')<TodoItemContainerProps>((props) => css`
 // 개별 할 일 아이템 컴포넌트 (삭제 애니메이션 적용)
 export default function TodoItem({ todo, onToggle, onDeleteRequest }: {
   todo: { id: number; text: string; completed: boolean },
-  onToggle: (id: number) => void,
+  onToggle: (id: number, checked: boolean) => void,
   onDeleteRequest: (id: number) => void
 }) {
   const [isRemoving, setIsRemoving] = useState(false);
@@ -87,7 +87,7 @@ export default function TodoItem({ todo, onToggle, onDeleteRequest }: {
       <input
         checked={ todo.completed }
         type="checkbox"
-        onChange={ () => onToggle(todo.id) }
+        onChange={ ({ target }) => onToggle(todo.id, target.checked) }
       />
       <span className={ `todo-text ${todo.completed ? 'completed' : ''}` }>
         { todo.text }

@@ -35,6 +35,14 @@ export default [
       'react/jsx-curly-spacing': ['error', { when: 'always', children: true }],
       '@typescript-eslint/consistent-type-definitions': ['warn', 'interface'],
       'curly': ['warn', 'multi'],
+      'max-len': [
+        'warn',
+        {
+          code: 100,
+          ignoreUrls: true,
+          ignoreTemplateLiterals: true,
+        },
+      ],
     }
   }
 ];

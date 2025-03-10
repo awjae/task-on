@@ -26,12 +26,20 @@ export type ContentInput = {
 export type Mutation = {
   __typename?: 'Mutation';
   createTodo?: Maybe<Scalars['String']['output']>;
+  updateCompletedTodo?: Maybe<Scalars['String']['output']>;
 };
 
 
 export type MutationCreateTodoArgs = {
   content: Array<ContentInput>;
   editKey: Scalars['String']['input'];
+  uuid: Scalars['String']['input'];
+};
+
+
+export type MutationUpdateCompletedTodoArgs = {
+  completed: Scalars['Boolean']['input'];
+  id: Scalars['Float']['input'];
   uuid: Scalars['String']['input'];
 };
 
@@ -74,6 +82,15 @@ export type CreateTodoMutationVariables = Exact<{
 
 
 export type CreateTodoMutation = { __typename?: 'Mutation', createTodo?: string | null };
+
+export type UpdateCompletedTodoMutationVariables = Exact<{
+  uuid: Scalars['String']['input'];
+  id: Scalars['Float']['input'];
+  completed: Scalars['Boolean']['input'];
+}>;
+
+
+export type UpdateCompletedTodoMutation = { __typename?: 'Mutation', updateCompletedTodo?: string | null };
 
 
 export const ReadTodoDocument = gql`
@@ -155,3 +172,36 @@ export function useCreateTodoMutation(baseOptions?: Apollo.MutationHookOptions<C
 export type CreateTodoMutationHookResult = ReturnType<typeof useCreateTodoMutation>;
 export type CreateTodoMutationResult = Apollo.MutationResult<CreateTodoMutation>;
 export type CreateTodoMutationOptions = Apollo.BaseMutationOptions<CreateTodoMutation, CreateTodoMutationVariables>;
+export const UpdateCompletedTodoDocument = gql`
+    mutation UpdateCompletedTodo($uuid: String!, $id: Float!, $completed: Boolean!) {
+  updateCompletedTodo(uuid: $uuid, id: $id, completed: $completed)
+}
+    `;
+export type UpdateCompletedTodoMutationFn = Apollo.MutationFunction<UpdateCompletedTodoMutation, UpdateCompletedTodoMutationVariables>;
+
+/**
+ * __useUpdateCompletedTodoMutation__
+ *
+ * To run a mutation, you first call `useUpdateCompletedTodoMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateCompletedTodoMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateCompletedTodoMutation, { data, loading, error }] = useUpdateCompletedTodoMutation({
+ *   variables: {
+ *      uuid: // value for 'uuid'
+ *      id: // value for 'id'
+ *      completed: // value for 'completed'
+ *   },
+ * });
+ */
+export function useUpdateCompletedTodoMutation(baseOptions?: Apollo.MutationHookOptions<UpdateCompletedTodoMutation, UpdateCompletedTodoMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateCompletedTodoMutation, UpdateCompletedTodoMutationVariables>(UpdateCompletedTodoDocument, options);
+      }
+export type UpdateCompletedTodoMutationHookResult = ReturnType<typeof useUpdateCompletedTodoMutation>;
+export type UpdateCompletedTodoMutationResult = Apollo.MutationResult<UpdateCompletedTodoMutation>;
+export type UpdateCompletedTodoMutationOptions = Apollo.BaseMutationOptions<UpdateCompletedTodoMutation, UpdateCompletedTodoMutationVariables>;

@@ -12,7 +12,10 @@ import { gql, useMutation, useQuery } from '@apollo/client';
 import Container from './container';
 import useLocalStorageState from 'use-local-storage-state';
 import toast from 'react-hot-toast';
-import { ReadTodoQuery, ReadTodoQueryVariables } from '../graphql-codegen/generated';
+import {
+  CreateTodoMutation, CreateTodoMutationVariables, ReadTodoQuery, ReadTodoQueryVariables,
+  UpdateCompletedTodoMutation, UpdateCompletedTodoMutationVariables,
+} from '../graphql-codegen/generated';
 
 const todosQuery = gql`
   query ReadTodo($uuid: String!) {
@@ -30,6 +33,11 @@ const todosQuery = gql`
 const createTodoQuery = gql`
   mutation CreateTodo($uuid: String!, $editKey: String!, $content: [ContentInput!]!) {
     createTodo(uuid: $uuid, editKey: $editKey, content: $content)
+  }
+`;
+const updateTodoQuery = gql`
+  mutation UpdateCompletedTodo($uuid: String!, $id: Float!, $completed: Boolean!) {
+    updateCompletedTodo(uuid: $uuid, id: $id, completed: $completed)
   }
 `;
 
@@ -52,7 +60,10 @@ export default function Index() {
   const { loading, data } = useQuery<ReadTodoQuery, ReadTodoQueryVariables>(
     todosQuery, { variables: { uuid }, skip: !isClient || !uuid }
   );
-  const [createTodo] = useMutation(createTodoQuery);
+  const [createTodo] =
+    useMutation<CreateTodoMutation, CreateTodoMutationVariables>(createTodoQuery);
+  const [updateCompletedTodo] =
+    useMutation<UpdateCompletedTodoMutation, UpdateCompletedTodoMutationVariables>(updateTodoQuery);
 
   const addTodo = () => {
     if (newTodo.trim()) {
@@ -66,10 +77,12 @@ export default function Index() {
     }
   };
 
-  const toggleTodo = (id: number) => {
+  const toggleTodo = async (id: number, checked: boolean) => {
     setTodos(todos.map(todo =>
-      todo.id === id ? { ...todo, completed: !todo.completed } : todo
+      todo.id === id ? { ...todo, completed: checked } : todo
     ));
+
+    await updateCompletedTodo({ variables: { uuid, id, completed: checked } });
   };
 
   const deleteTodo = (id: number) => {
