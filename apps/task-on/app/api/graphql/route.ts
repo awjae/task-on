@@ -30,7 +30,9 @@ const typeDefs = gql`
 
   type Mutation {
     createTodo(uuid: String!, editKey: String!, content: [ContentInput!]!): String
+    updateCompletedTodo(uuid: String!, id: Int!, completed: Boolean!): String
   }
+
 `;
 
 const resolvers = {
@@ -54,6 +56,20 @@ const resolvers = {
       await disconnectDB();
       return '할 일이 성공적으로 저장되었습니다.';
     },
+    updateCompletedTodo: async (_: unknown, {
+      uuid, id, completed
+    }: {
+      uuid: string; id: number; completed: boolean;
+    }) => {
+      await connectDB();
+      const updatedTodo = await Todo.findOneAndUpdate(
+        { uuid, 'content.id': id },
+        { $set: { 'content.$.completed': completed } },
+        { new: true }
+      );
+      await disconnectDB();
+      return updatedTodo ? '할 일이 성공적으로 업데이트되었습니다.' : '할 일을 찾을 수 없습니다.';
+    }
   },
 };
 
