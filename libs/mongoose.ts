@@ -1,6 +1,6 @@
 import { IContent } from 'apps/task-on/app/_common/type';
 import bcrypt from 'bcrypt';
-import mongoose from 'mongoose';
+import mongoose, { Query } from 'mongoose';
 
 const mongoURI = 'mongodb://admin:admin@localhost:27017/todo-on-mongo?authSource=admin';
 
@@ -27,7 +27,7 @@ const todoSchema = new mongoose.Schema({
   content: { type: Array, required: true }, // 투두리스트 데이터 (JSON 형태)
   editKey: { type: String }, // 편집용 비밀번호 (해시 저장)
   createdAt: { type: Date, default: Date.now }, // 생성 시간
-  expiresAt: { type: Date }, // 만료 시간 (선택)
+  deletedAt: { type: Date, default: null } // 삭제된 시간 (소프트 삭제)
 });
 
 // 🔐 편집 비밀번호 해싱 (저장 전)
@@ -37,6 +37,19 @@ todoSchema.pre('save', async function (next) {
     this.editKey = await bcrypt.hash(this.editKey, saltRounds);
   }
   next();
+});
+// soft deleted 미들웨어 설정
+todoSchema.pre(/^find/, function (next) {
+  const query = this as Query<ITodo, ITodo>;
+  query.where({ deletedAt: null });
+  next();
+});
+// soft deleted 미들웨어 설정 (JSON 변환 시) - 대상이 todo가 아니라 content임
+todoSchema.set('toJSON', {
+  transform: (doc, ret) => {
+    ret['content'] = ret['content'].filter((item: IContent) => !item.deleted);
+    return ret;
+  },
 });
 
 // 🔑 비밀번호 검증 메서드
@@ -49,7 +62,7 @@ interface ITodo extends Document {
   content: IContent[];
   createdAt: Date;
   editKey?: string | null;
-  expiresAt?: Date | null;
+  deletedAt?: Date | null;
 }
 
 export const Todo = mongoose.models['todo'] as mongoose.Model<ITodo> || mongoose.model<ITodo>('todo', todoSchema);

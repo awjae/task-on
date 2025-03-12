@@ -26,6 +26,7 @@ export type ContentInput = {
 export type Mutation = {
   __typename?: 'Mutation';
   createTodo?: Maybe<Scalars['String']['output']>;
+  deleteTodoItem?: Maybe<Scalars['String']['output']>;
   updateCompletedTodo?: Maybe<Scalars['String']['output']>;
 };
 
@@ -33,6 +34,12 @@ export type Mutation = {
 export type MutationCreateTodoArgs = {
   content: Array<ContentInput>;
   editKey: Scalars['String']['input'];
+  uuid: Scalars['String']['input'];
+};
+
+
+export type MutationDeleteTodoItemArgs = {
+  id: Scalars['Float']['input'];
   uuid: Scalars['String']['input'];
 };
 

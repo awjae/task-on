@@ -31,8 +31,8 @@ const typeDefs = gql`
   type Mutation {
     createTodo(uuid: String!, editKey: String!, content: [ContentInput!]!): String
     updateCompletedTodo(uuid: String!, id: Float!, completed: Boolean!): String
+    deleteTodoItem(uuid: String!, id: Float!): String
   }
-
 `;
 
 const resolvers = {
@@ -69,7 +69,54 @@ const resolvers = {
       );
       await disconnectDB();
       return updatedTodo ? '할 일이 성공적으로 업데이트되었습니다.' : '할 일을 찾을 수 없습니다.';
-    }
+    },
+    /**
+     * @deprecated 사용하지않음
+     * */
+    // deleteTodo: async (_: unknown, {
+    //   uuid
+    // }: {
+    //   uuid: string;
+    // }) => {
+    //   await connectDB();
+    //   const todo = await Todo.findOneAndUpdate(
+    //     { uuid },
+    //     { deletedAt: new Date() },
+    //   );
+    //   await disconnectDB();
+
+    //   if (!todo)
+    //     return '할 일을 찾을 수 없습니다.';
+
+    //   return '할 일이 성공적으로 삭제되었습니다.';
+    // },
+    deleteTodoItem: async (_: unknown, {
+      uuid,
+      id,
+    }: {
+      uuid: string;
+      id: number;
+    }) => {
+      await connectDB();
+
+      const todo = await Todo.findOne({ uuid });
+      if (!todo)
+        return '잘못된 할 일 입니다.';
+
+      const itemIndex = todo.content.findIndex((item) => item.id === id);
+      if (itemIndex === -1)
+        return '할 일을 찾을 수 없습니다.';
+
+      const item = todo.content[itemIndex];
+      if (item) {
+        item.deleted = new Date();
+        await todo.save();
+      }
+
+      await disconnectDB();
+
+      return '할 일이 성공적으로 삭제되었습니다.';
+    },
   },
 };
 
