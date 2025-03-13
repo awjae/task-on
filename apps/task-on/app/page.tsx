@@ -13,7 +13,8 @@ import Container from './container';
 import useLocalStorageState from 'use-local-storage-state';
 import toast from 'react-hot-toast';
 import {
-  CreateTodoMutation, CreateTodoMutationVariables, ReadTodoQuery, ReadTodoQueryVariables,
+  CreateTodoMutation, CreateTodoMutationVariables, DeleteTodoItemMutation,
+  DeleteTodoItemMutationVariables, ReadTodoQuery, ReadTodoQueryVariables,
   UpdateCompletedTodoMutation, UpdateCompletedTodoMutationVariables,
 } from '../graphql-codegen/generated';
 
@@ -40,6 +41,11 @@ const updateTodoQuery = gql`
     updateCompletedTodo(uuid: $uuid, id: $id, completed: $completed)
   }
 `;
+const deleteTodoItemQuery = gql`
+  mutation DeleteTodoItem($uuid: String!, $id: Float!) {
+    deleteTodoItem(uuid: $uuid, id: $id)
+  }
+`;
 
 export default function Index() {
   const isClient = typeof window !== 'undefined';
@@ -64,6 +70,8 @@ export default function Index() {
     useMutation<CreateTodoMutation, CreateTodoMutationVariables>(createTodoQuery);
   const [updateCompletedTodo] =
     useMutation<UpdateCompletedTodoMutation, UpdateCompletedTodoMutationVariables>(updateTodoQuery);
+  const [deleteTodoItem] =
+    useMutation<DeleteTodoItemMutation, DeleteTodoItemMutationVariables>(deleteTodoItemQuery);
 
   const addTodo = () => {
     if (newTodo.trim()) {
@@ -85,8 +93,10 @@ export default function Index() {
     await updateCompletedTodo({ variables: { uuid, id, completed: checked } });
   };
 
-  const deleteTodo = (id: number) => {
+  const deleteTodo = async (id: number) => {
     setTodos(todos.filter(todo => todo.id !== id));
+
+    await deleteTodoItem({ variables: { uuid, id}});
   };
 
   const handleSubmit = useCallback(async ({ uuid, password }: ISubmitDate) => {
