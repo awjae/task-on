@@ -7,6 +7,13 @@ import { connectDB, disconnectDB, Todo } from '@libs/mongoose';
 import { createResponse } from '../_utils/response';
 
 const typeDefs = gql`
+  type Response<T> {
+    message: String
+    status: Int!
+    success: Boolean!
+    data: [T]
+  }
+
   type TTodoList {
     uuid: String!
     editKey: String!
@@ -26,13 +33,13 @@ const typeDefs = gql`
   }
 
   type Query {
-    readTodo(uuid: String!): TTodoList!
+    readTodo(uuid: String!): Response<TTodoList>!
   }
 
   type Mutation {
-    createTodo(uuid: String!, editKey: String!, content: [ContentInput!]!): String
-    updateCompletedTodo(uuid: String!, id: Float!, completed: Boolean!): String
-    deleteTodoItem(uuid: String!, id: Float!): String
+    createTodo(uuid: String!, editKey: String!, content: [ContentInput!]!): Response<TTodoList>
+    updateCompletedTodo(uuid: String!, id: Float!, completed: Boolean!): Response<TTodoList>
+    deleteTodoItem(uuid: String!, id: Float!): Response<TTodoList>
   }
 `;
 
@@ -42,7 +49,11 @@ const resolvers = {
       await connectDB();
       const todos = await Todo.find({ uuid });
       await disconnectDB();
-      return todos ?? [];
+      return createResponse({
+        status: 200,
+        success: true,
+        data: todos ?? [],
+      });
     },
   },
   Mutation: {
