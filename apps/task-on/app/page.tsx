@@ -21,29 +21,31 @@ import {
 const todosQuery = gql`
   query ReadTodo($uuid: String!) {
     readTodo(uuid: $uuid) {
-      uuid
-      editKey
-      content {
-        id
-        text
-        completed
+      data {
+        uuid
+        editKey
+        content {
+          id
+          text
+          completed
+        }
       }
     }
   }
 `;
 const createTodoQuery = gql`
   mutation CreateTodo($uuid: String!, $editKey: String!, $content: [ContentInput!]!) {
-    createTodo(uuid: $uuid, editKey: $editKey, content: $content)
+    createTodo(uuid: $uuid, editKey: $editKey, content: $content) { success }
   }
 `;
 const updateTodoQuery = gql`
   mutation UpdateCompletedTodo($uuid: String!, $id: Float!, $completed: Boolean!) {
-    updateCompletedTodo(uuid: $uuid, id: $id, completed: $completed)
+    updateCompletedTodo(uuid: $uuid, id: $id, completed: $completed) { success }
   }
 `;
 const deleteTodoItemQuery = gql`
   mutation DeleteTodoItem($uuid: String!, $id: Float!) {
-    deleteTodoItem(uuid: $uuid, id: $id)
+    deleteTodoItem(uuid: $uuid, id: $id) { success }
   }
 `;
 
@@ -124,7 +126,7 @@ export default function Index() {
     if (!data?.readTodo)
       return undefined;
 
-    const { content } = data.readTodo;
+    const content = data.readTodo.data?.content ?? [];
     const originIds = todos.map(todo => todo.id);
     const filteredTodo = content.filter(todo => !originIds.includes(todo.id));
     setTodos(prev => prev.concat(filteredTodo));
