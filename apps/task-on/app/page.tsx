@@ -75,7 +75,7 @@ export default function Index() {
   const [deleteTodoItem] =
     useMutation<DeleteTodoItemMutation, DeleteTodoItemMutationVariables>(deleteTodoItemQuery);
 
-  const addTodo = () => {
+  const addTodo = useCallback(() => {
     if (newTodo.trim()) {
       const currentTodos: IContent[] = [...todos, {
         id: Date.now(),
@@ -85,21 +85,21 @@ export default function Index() {
       setTodos(currentTodos);
       setNewTodo('');
     }
-  };
+  }, [newTodo, setTodos, todos]);
 
-  const toggleTodo = async (id: number, checked: boolean) => {
+  const toggleTodo = useCallback(async (id: number, checked: boolean) => {
     setTodos(todos.map(todo =>
       todo.id === id ? { ...todo, completed: checked } : todo
     ));
 
     await updateCompletedTodo({ variables: { uuid, id, completed: checked } });
-  };
+  }, [setTodos, todos, updateCompletedTodo, uuid]);
 
-  const deleteTodo = async (id: number) => {
+  const deleteTodo = useCallback(async (id: number) => {
     setTodos(todos.filter(todo => todo.id !== id));
 
     await deleteTodoItem({ variables: { uuid, id}});
-  };
+  }, [deleteTodoItem, setTodos, todos, uuid]);
 
   const handleSubmit = useCallback(async ({ uuid, password }: ISubmitDate) => {
     await createTodo({
@@ -121,17 +121,13 @@ export default function Index() {
   const handleCloseImportDialog = () => setImportDialogOpen(false);
 
   useEffect(() => {
-    if(!loading || !data)
-      return undefined;
-    if (!data?.readTodo)
-      return undefined;
-
-    const content = data.readTodo.data?.content ?? [];
-    const originIds = todos.map(todo => todo.id);
-    const filteredTodo = content.filter(todo => !originIds.includes(todo.id));
-    setTodos(prev => prev.concat(filteredTodo));
-
-  }, [loading, data, setTodos, todos]);
+    if (!loading && data?.readTodo) {
+      const content = data.readTodo.data?.content ?? [];
+      const originIds = new Set(todos.map(todo => todo.id));
+      const filteredTodo = content.filter(todo => !originIds.has(todo.id));
+      setTodos(prev => prev.concat(filteredTodo));
+    }
+  }, [loading, data, todos, setTodos]);
 
   return <Container>
     <StyledPage>
