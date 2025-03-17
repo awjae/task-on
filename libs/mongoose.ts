@@ -2,7 +2,7 @@ import { IContent } from 'apps/task-on/app/_common/type';
 import bcrypt from 'bcrypt';
 import mongoose, { Query } from 'mongoose';
 
-const mongoURI = 'mongodb://admin:admin@localhost:27017/todo-on-mongo?authSource=admin';
+const mongoURI = process.env['MONGODB_URI'] || 'mongodb://admin:admin@localhost:27017/todo-on-mongo?authSource=admin';
 
 export const connectDB = async () => {
   try {
