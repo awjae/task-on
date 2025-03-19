@@ -1,6 +1,6 @@
 'use client';
 import { ApolloProvider } from '@apollo/client';
-import { client } from './_common/gql';
+import { client } from '../_common/gql';
 
 export default function Container({
   children

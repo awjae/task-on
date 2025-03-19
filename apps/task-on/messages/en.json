@@ -1,0 +1,7 @@
+{
+  "HomePage": {
+    "title": "Todo",
+    "add": "Add",
+    "addInputPlaceholder": "Enter your task"
+  }
+}

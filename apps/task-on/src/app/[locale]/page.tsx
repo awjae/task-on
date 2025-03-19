@@ -3,11 +3,11 @@ import FileUploadIcon from '@mui/icons-material/FileUpload';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import { Button } from '@mui/material';
 import { useCallback, useEffect, useState } from 'react';
-import TodoItem from './_components/todo-item';
+import TodoItem from '../_components/todo-item';
 import { Header, HeaderButtonBox, StyledPage, TodoInputBox, TodoListBox } from './styles';
-import { ShareDialog } from './_components/share-dialog';
-import { ImportDialog } from './_components/import-dialog';
-import { IContent, ISubmitDate } from './_common/type';
+import { ShareDialog } from '../_components/share-dialog';
+import { ImportDialog } from '../_components/import-dialog';
+import { IContent, ISubmitDate } from '../_common/type';
 import { gql, useMutation, useQuery } from '@apollo/client';
 import Container from './container';
 import useLocalStorageState from 'use-local-storage-state';
@@ -16,7 +16,8 @@ import {
   CreateTodoMutation, CreateTodoMutationVariables, DeleteTodoItemMutation,
   DeleteTodoItemMutationVariables, ReadTodoQuery, ReadTodoQueryVariables,
   UpdateCompletedTodoMutation, UpdateCompletedTodoMutationVariables,
-} from '../graphql-codegen/generated';
+} from '../../../graphql-codegen/generated';
+import { useTranslations } from 'next-intl';
 
 const todosQuery = gql`
   query ReadTodo($uuid: String!) {
@@ -51,6 +52,8 @@ const deleteTodoItemQuery = gql`
 
 export default function Index() {
   const isClient = typeof window !== 'undefined';
+  const t = useTranslations('HomePage');
+
   const [todos, setTodos] = useLocalStorageState<Array<IContent>>('todos', {
     defaultValue: isClient && localStorage.getItem('todos') ?
       JSON.parse(localStorage.getItem('todos') || '[]') : [],
@@ -132,7 +135,7 @@ export default function Index() {
   return <Container>
     <StyledPage>
       <Header>
-        <h1>할 일</h1>
+        <h1>{ t('title') }</h1>
       </Header>
 
       <HeaderButtonBox>
@@ -159,14 +162,14 @@ export default function Index() {
 
       <TodoInputBox>
         <input
-          placeholder="할 일을 입력하세요"
+          placeholder={ t('addInputPlaceholder') }
           type="text"
           value={ newTodo }
           onChange={ (e) => setNewTodo(e.target.value) }
           onKeyDown={ (e) => e.key === 'Enter' && addTodo() }
         />
         <button onClick={ addTodo }>
-          추가
+          { t('add') }
         </button>
       </TodoInputBox>
 

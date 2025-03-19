@@ -1,4 +1,4 @@
-import { IContent } from 'apps/task-on/app/_common/type';
+import { IContent } from 'apps/task-on/src/app/_common/type';
 import bcrypt from 'bcrypt';
 import mongoose, { Query } from 'mongoose';
 

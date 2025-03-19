@@ -1,9 +1,12 @@
 import { ThemeProvider } from '@mui/material';
 import './global.css';
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v15-appRouter';
-import { customTheme } from './_common/theme';
+import { customTheme } from '../_common/theme';
 import { Toaster } from 'react-hot-toast';
 import Container from './container';
+import { hasLocale, NextIntlClientProvider } from 'next-intl';
+import { routing } from '../../i18n/routing';
+import { notFound } from 'next/navigation';
 
 export const metadata = {
   title: 'TaskOn - 초간단 할 일 | Super Simple Todo List',
@@ -41,14 +44,21 @@ export const metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
+  params
 }: {
   children: React.ReactNode;
+  params: Promise<{locale: string}>;
 }) {
 
+  const {locale} = await params;
+  if (!hasLocale(routing.locales, locale))
+    notFound();
+
+
   return (
-    <html lang="ko">
+    <html lang={ locale }>
       <head>
         <link
           as="style"
@@ -59,9 +69,11 @@ export default function RootLayout({
       <body>
         <AppRouterCacheProvider options={ { key: 'css' } }>
           <ThemeProvider theme={ customTheme }>
-            <Container>
-              { children }
-            </Container>
+            <NextIntlClientProvider>
+              <Container>
+                { children }
+              </Container>
+            </NextIntlClientProvider>
           </ThemeProvider>
           <Toaster />
         </AppRouterCacheProvider>
