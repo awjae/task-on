@@ -4,6 +4,8 @@
   "license": "MIT",
   "scripts": {
     "task-on": "nx run task-on:serve",
+    "task-on:test": "nx run task-on:test",
+    "task-on:test-api": "nx run task-on:test --config=jest-api.config.ts",
     "task-on-electron": "nx run task-on-electron:serve",
     "task-on-expo": "nx run task-on-expo:serve",
     "postinstall": "electron-builder install-app-deps && electron-builder install-app-deps",

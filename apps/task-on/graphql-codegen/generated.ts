@@ -70,7 +70,6 @@ export type TContent = {
 export type TResponse = {
   message?: Maybe<Scalars['String']['output']>;
   status: Scalars['Int']['output'];
-  success: Scalars['Boolean']['output'];
 };
 
 export type TTodoItemResponse = TResponse & {
@@ -78,7 +77,6 @@ export type TTodoItemResponse = TResponse & {
   data?: Maybe<TContent>;
   message?: Maybe<Scalars['String']['output']>;
   status: Scalars['Int']['output'];
-  success: Scalars['Boolean']['output'];
 };
 
 export type TTodoList = {
@@ -93,7 +91,6 @@ export type TTodoResponse = TResponse & {
   data?: Maybe<TTodoList>;
   message?: Maybe<Scalars['String']['output']>;
   status: Scalars['Int']['output'];
-  success: Scalars['Boolean']['output'];
 };
 
 export type ReadTodoQueryVariables = Exact<{
@@ -110,7 +107,7 @@ export type CreateTodoMutationVariables = Exact<{
 }>;
 
 
-export type CreateTodoMutation = { __typename?: 'Mutation', createTodo?: { __typename?: 'TTodoItemResponse', success: boolean } | null };
+export type CreateTodoMutation = { __typename?: 'Mutation', createTodo?: { __typename?: 'TTodoItemResponse', status: number } | null };
 
 export type UpdateCompletedTodoMutationVariables = Exact<{
   uuid: Scalars['String']['input'];
@@ -119,7 +116,7 @@ export type UpdateCompletedTodoMutationVariables = Exact<{
 }>;
 
 
-export type UpdateCompletedTodoMutation = { __typename?: 'Mutation', updateCompletedTodo?: { __typename?: 'TTodoItemResponse', success: boolean } | null };
+export type UpdateCompletedTodoMutation = { __typename?: 'Mutation', updateCompletedTodo?: { __typename?: 'TTodoItemResponse', status: number } | null };
 
 export type DeleteTodoItemMutationVariables = Exact<{
   uuid: Scalars['String']['input'];
@@ -127,7 +124,7 @@ export type DeleteTodoItemMutationVariables = Exact<{
 }>;
 
 
-export type DeleteTodoItemMutation = { __typename?: 'Mutation', deleteTodoItem?: { __typename?: 'TTodoItemResponse', success: boolean } | null };
+export type DeleteTodoItemMutation = { __typename?: 'Mutation', deleteTodoItem?: { __typename?: 'TTodoItemResponse', status: number } | null };
 
 
 export const ReadTodoDocument = gql`
@@ -181,7 +178,7 @@ export type ReadTodoQueryResult = Apollo.QueryResult<ReadTodoQuery, ReadTodoQuer
 export const CreateTodoDocument = gql`
     mutation CreateTodo($uuid: String!, $editKey: String!, $content: [ContentInput!]!) {
   createTodo(uuid: $uuid, editKey: $editKey, content: $content) {
-    success
+    status
   }
 }
     `;
@@ -216,7 +213,7 @@ export type CreateTodoMutationOptions = Apollo.BaseMutationOptions<CreateTodoMut
 export const UpdateCompletedTodoDocument = gql`
     mutation UpdateCompletedTodo($uuid: String!, $id: Float!, $completed: Boolean!) {
   updateCompletedTodo(uuid: $uuid, id: $id, completed: $completed) {
-    success
+    status
   }
 }
     `;
@@ -251,7 +248,7 @@ export type UpdateCompletedTodoMutationOptions = Apollo.BaseMutationOptions<Upda
 export const DeleteTodoItemDocument = gql`
     mutation DeleteTodoItem($uuid: String!, $id: Float!) {
   deleteTodoItem(uuid: $uuid, id: $id) {
-    success
+    status
   }
 }
     `;

@@ -36,17 +36,17 @@ const todosQuery = gql`
 `;
 const createTodoQuery = gql`
   mutation CreateTodo($uuid: String!, $editKey: String!, $content: [ContentInput!]!) {
-    createTodo(uuid: $uuid, editKey: $editKey, content: $content) { success }
+    createTodo(uuid: $uuid, editKey: $editKey, content: $content) { status }
   }
 `;
 const updateTodoQuery = gql`
   mutation UpdateCompletedTodo($uuid: String!, $id: Float!, $completed: Boolean!) {
-    updateCompletedTodo(uuid: $uuid, id: $id, completed: $completed) { success }
+    updateCompletedTodo(uuid: $uuid, id: $id, completed: $completed) { status }
   }
 `;
 const deleteTodoItemQuery = gql`
   mutation DeleteTodoItem($uuid: String!, $id: Float!) {
-    deleteTodoItem(uuid: $uuid, id: $id) { success }
+    deleteTodoItem(uuid: $uuid, id: $id) { status }
   }
 `;
 

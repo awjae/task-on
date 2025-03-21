@@ -22,13 +22,11 @@ export const todoTypeDefs = gql`
   type TTodoResponse implements TResponse {
     message: String
     status: Int!
-    success: Boolean!
     data: TTodoList
   }
   type TTodoItemResponse implements TResponse {
     message: String
     status: Int!
-    success: Boolean!
     data: TContent
   }
 

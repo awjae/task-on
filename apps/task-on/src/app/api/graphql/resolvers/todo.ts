@@ -10,7 +10,6 @@ export const todoResolvers = {
       await disconnectDB();
       return createResponse({
         status: 200,
-        success: true,
         data: todos ?? [],
       });
     },
@@ -26,11 +25,9 @@ export const todoResolvers = {
       const newTodo = new Todo({ uuid, editKey, content });
       await newTodo.save();
       await disconnectDB();
-
       return createResponse({
         message: '할 일이 성공적으로 저장되었습니다.',
         status: 201,
-        success: true,
       });
     },
     updateCompletedTodo: async (_: unknown, {
@@ -51,11 +48,9 @@ export const todoResolvers = {
         createResponse({
           message: '할 일이 성공적으로 업데이트되었습니다.',
           status: 202,
-          success: true,
         }) : createResponse({
           message: '할 일을 찾을 수 없습니다.',
           status: 204,
-          success: false,
         });
     },
     deleteTodoItem: async (_: unknown, {
@@ -73,7 +68,6 @@ export const todoResolvers = {
         return createResponse({
           message: '할 일을 찾을 수 없습니다.',
           status: 204,
-          success: false,
         });
 
       const item = todo.content[itemIndex];
@@ -86,7 +80,6 @@ export const todoResolvers = {
       return createResponse({
         message: '할 일이 성공적으로 삭제되었습니다.',
         status: 200,
-        success: true,
       });
     },
   },
