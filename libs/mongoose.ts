@@ -2,25 +2,41 @@ import { IContent } from 'apps/task-on/src/app/_common/type';
 import bcrypt from 'bcrypt';
 import mongoose, { Query } from 'mongoose';
 
-const mongoURI = process.env['MONGODB_URI'] || 'mongodb://admin:admin@localhost:27017/todo-on-mongo?authSource=admin';
+const mongoURI = process.env.NODE_ENV === 'development' ? 'mongodb://admin:admin@localhost:27017/todo-on-mongo?authSource=admin' : process.env['MONGODB_URI'] ?? '';
+let isConnected = false;
 
 export const connectDB = async () => {
+  if (isConnected)
+    return undefined;
+
   try {
     await mongoose.connect(mongoURI, {});
-    console.log('✅ MongoDB 연결 성공!');
+    isConnected = true;
   } catch (error) {
-    console.error('❌ MongoDB 연결 실패:', error);
+    console.error('❌ : ', error);
   }
 };
 
 export const disconnectDB = async () => {
   try {
     await mongoose.disconnect();
-    console.log('✅ MongoDB Disconnected!');
+    isConnected = false;
   } catch (error) {
-    console.error('❌ MongoDB Disconnection Error:', error);
+    console.error('❌', error);
   }
 };
+
+export const checkAndConnectDB = async () => {
+  if (!isConnected) {
+    console.log('DB 재연결');
+    await connectDB();
+  }
+};
+
+mongoose.connection.on('disconnected', () => {
+  console.log('MongoDB 연결이 만료되었습니다.');
+  isConnected = false;
+});
 
 const todoSchema = new mongoose.Schema({
   uuid: { type: String, required: true, unique: true }, // 공유용 UUID

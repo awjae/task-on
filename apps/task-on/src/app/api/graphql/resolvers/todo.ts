@@ -1,13 +1,11 @@
-import { connectDB, Todo, disconnectDB } from '@libs/mongoose';
+import { Todo } from '@libs/mongoose';
 import { IContent } from '../../../_common/type';
 import { createResponse } from '../../_utils/response';
 
 export const todoResolvers = {
   Query: {
     readTodo: async (_: unknown, { uuid }: { uuid: string }) => {
-      await connectDB();
       const todos = await Todo.find({ uuid });
-      await disconnectDB();
       return createResponse({
         status: 200,
         data: todos ?? [],
@@ -21,10 +19,9 @@ export const todoResolvers = {
       uuid: string; editKey: string; content: IContent[];
     }) => {
 
-      await connectDB();
       const newTodo = new Todo({ uuid, editKey, content });
       await newTodo.save();
-      await disconnectDB();
+
       return createResponse({
         message: '할 일이 성공적으로 저장되었습니다.',
         status: 201,
@@ -36,13 +33,11 @@ export const todoResolvers = {
       uuid: string; id: number; completed: boolean;
     }) => {
 
-      await connectDB();
       const updatedTodo = await Todo.findOneAndUpdate(
         { uuid, 'content.id': id },
         { $set: { 'content.$.completed': completed } },
         { new: true }
       );
-      await disconnectDB();
 
       return updatedTodo ?
         createResponse({
@@ -61,7 +56,6 @@ export const todoResolvers = {
       id: number;
     }) => {
 
-      await connectDB();
       const todo = await Todo.findOne({ uuid });
       const itemIndex = todo?.content.findIndex((item) => item.id === id);
       if (!todo || !itemIndex || itemIndex === -1)
@@ -75,7 +69,6 @@ export const todoResolvers = {
         item.deleted = new Date();
         await todo.save();
       }
-      await disconnectDB();
 
       return createResponse({
         message: '할 일이 성공적으로 삭제되었습니다.',
