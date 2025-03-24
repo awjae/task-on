@@ -58,7 +58,8 @@ export const todoResolvers = {
 
       const todo = await Todo.findOne({ uuid });
       const itemIndex = todo?.content.findIndex((item) => item.id === id);
-      if (!todo || !itemIndex || itemIndex === -1)
+
+      if (!todo || itemIndex === undefined || itemIndex === -1)
         return createResponse({
           message: '할 일을 찾을 수 없습니다.',
           status: 204,

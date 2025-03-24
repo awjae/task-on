@@ -18,6 +18,11 @@ import {
   UpdateCompletedTodoMutation, UpdateCompletedTodoMutationVariables,
 } from '../../../graphql-codegen/generated';
 import { useTranslations } from 'next-intl';
+import {
+  createTodoQuery as createQuery,
+  updateTodoItemQuery as updateItemQuery,
+  deleteTodoItemQuery as deleteItemQuery
+} from '../api/graphql/queries/todo';
 
 const todosQuery = gql`
   query ReadTodo($uuid: String!) {
@@ -35,19 +40,13 @@ const todosQuery = gql`
   }
 `;
 const createTodoQuery = gql`
-  mutation CreateTodo($uuid: String!, $editKey: String!, $content: [ContentInput!]!) {
-    createTodo(uuid: $uuid, editKey: $editKey, content: $content) { status }
-  }
+  ${createQuery}
 `;
 const updateTodoQuery = gql`
-  mutation UpdateCompletedTodo($uuid: String!, $id: Float!, $completed: Boolean!) {
-    updateCompletedTodo(uuid: $uuid, id: $id, completed: $completed) { status }
-  }
+  ${updateItemQuery}
 `;
 const deleteTodoItemQuery = gql`
-  mutation DeleteTodoItem($uuid: String!, $id: Float!) {
-    deleteTodoItem(uuid: $uuid, id: $id) { status }
-  }
+  ${deleteItemQuery}
 `;
 
 export default function Index() {

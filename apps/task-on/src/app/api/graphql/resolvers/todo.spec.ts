@@ -4,6 +4,10 @@ import { todoTypeDefs } from '../type/todo';
 import { todoResolvers } from '../resolvers/todo';
 import { gql } from 'graphql-tag';
 import { v4 } from 'uuid';
+import { createTodoQuery, deleteTodoItemQuery, updateTodoItemQuery } from '../queries/todo';
+import mongoose from 'mongoose';
+
+const mongoURI = process.env['TEST_MONGODB_URI'] ?? '';
 
 const typeDefs = gql`
   ${commonTypeDefs}
@@ -21,25 +25,17 @@ const server = new ApolloServer({
 
 const tempEditKey = '1234';
 
-// TODO: client 쪽 gql 이랑 일치 모듈화 가능하지 않을까
-const createQuery = `
-  mutation CreateTodo($uuid: String!, $editKey: String!, $content: [ContentInput!]!) {
-    createTodo(uuid: $uuid, editKey: $editKey, content: $content) { status }
-  }
-`;
-const updateQuery = `
-  mutation UpdateCompletedTodo($uuid: String!, $id: Int!, $completed: Boolean!) {
-    updateCompletedTodo(uuid: $uuid, id: $id, completed: $completed) { status }
-  }
-`;
-
-// beforeAll(async () => {});
-// afterAll(async () => {});
+beforeAll(async () => {
+  await mongoose.connect(mongoURI);
+});
+afterAll(async () => {
+  await mongoose.disconnect();
+});
 
 describe('Todo Resolvers', () => {
   it('should create a new todo', async () => {
     const response = await server.executeOperation({
-      query: createQuery,
+      query: createTodoQuery,
       variables: {
         uuid: v4(),
         editKey: tempEditKey,
@@ -57,7 +53,7 @@ describe('Todo Resolvers', () => {
     const id = new Date().getTime();
 
     await server.executeOperation({
-      query: createQuery,
+      query: createTodoQuery,
       variables: {
         uuid,
         editKey: tempEditKey,
@@ -66,7 +62,7 @@ describe('Todo Resolvers', () => {
     });
 
     const response = await server.executeOperation({
-      query: updateQuery,
+      query: updateTodoItemQuery,
       variables: {
         uuid,
         id,
@@ -79,5 +75,29 @@ describe('Todo Resolvers', () => {
     expect(data.updateCompletedTodo.status).toBe(202);
   });
 
-  //delete - soft deleted
+  it('should delete a todo item', async () => {
+    const uuid = v4();
+    const id = new Date().getTime();
+
+    await server.executeOperation({
+      query: createTodoQuery,
+      variables: {
+        uuid,
+        editKey: tempEditKey,
+        content: [{ id, text: 'Todo to Delete', completed: false }],
+      },
+    });
+
+    const response = await server.executeOperation({
+      query: deleteTodoItemQuery,
+      variables: {
+        uuid,
+        id,
+      },
+    });
+
+    const data = response.body['singleResult'].data;
+    expect(data.deleteTodoItem).toBeDefined();
+    expect(data.deleteTodoItem.status).toBe(200);
+  });
 });

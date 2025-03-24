@@ -1,8 +1,8 @@
-import { IContent } from 'apps/task-on/src/app/_common/type';
 import bcrypt from 'bcrypt';
 import mongoose, { Query } from 'mongoose';
+import { IContent } from '../apps/task-on/src/app/_common/type';
 
-const mongoURI = process.env.NODE_ENV === 'development' ? 'mongodb://admin:admin@localhost:27017/todo-on-mongo?authSource=admin' : process.env['MONGODB_URI'] ?? '';
+const mongoURI = process.env.NODE_ENV === 'development' ? process.env['TEST_MONGODB_URI'] ?? '' : process.env['MONGODB_URI'] ?? '';
 let isConnected = false;
 
 export const connectDB = async () => {

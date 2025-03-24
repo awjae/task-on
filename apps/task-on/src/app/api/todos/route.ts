@@ -16,7 +16,6 @@ export async function GET(request: Request) {
     return createResponse({
       message: 'uuid가 필요합니다.',
       status: 400,
-      success: false,
     });
 
 
@@ -29,12 +28,10 @@ export async function GET(request: Request) {
       return createResponse({
         message: '할 일이 없습니다.',
         status: 404,
-        success: false,
       });
 
     return createResponse({
       status: 200,
-      success: true,
       data: { todos },
     });
   } catch (error) {
@@ -42,7 +39,6 @@ export async function GET(request: Request) {
     return createResponse({
       message: '서버 오류가 발생했습니다.',
       status: 500,
-      success: false,
     });
   }
 }
@@ -54,7 +50,6 @@ export async function POST(request: Request) {
     return createResponse({
       message: '유효하지 않은 입력입니다.',
       status: 400,
-      success: false,
     });;
   }
 
@@ -73,13 +68,11 @@ export async function POST(request: Request) {
     return createResponse({
       message: '할 일이 성공적으로 저장되었습니다.',
       status: 201,
-      success: true,
     });
   } catch {
     return createResponse({
       message: '서버 오류가 발생했습니다.',
       status: 500,
-      success: false,
     });
   }
 }
