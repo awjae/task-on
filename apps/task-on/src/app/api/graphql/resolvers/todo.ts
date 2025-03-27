@@ -1,15 +1,15 @@
 import { Todo } from '@libs/mongoose';
 import { IContent } from '../../../_common/type';
-import { createResponse } from '../../_utils/response';
 
 export const todoResolvers = {
   Query: {
     readTodo: async (_: unknown, { uuid }: { uuid: string }) => {
-      const todos = await Todo.find({ uuid });
-      return createResponse({
+      const todoList = await Todo.findOne({ uuid });
+
+      return {
         status: 200,
-        data: todos ?? [],
-      });
+        data: todoList ?? null,
+      };
     },
   },
   Mutation: {
@@ -20,12 +20,21 @@ export const todoResolvers = {
     }) => {
 
       const newTodo = new Todo({ uuid, editKey, content });
-      await newTodo.save();
+      try {
+        await newTodo.save();
+      } catch (error: unknown) {
 
-      return createResponse({
+        const mongooseError = error as { code: number };
+
+        // duplicated uuid error
+        if(mongooseError.code === 11000)
+          await Todo.findOneAndUpdate({ editKey, content });
+      }
+
+      return {
         message: '할 일이 성공적으로 저장되었습니다.',
         status: 201,
-      });
+      };
     },
     updateCompletedTodo: async (_: unknown, {
       uuid, id, completed
@@ -40,13 +49,13 @@ export const todoResolvers = {
       );
 
       return updatedTodo ?
-        createResponse({
+        {
           message: '할 일이 성공적으로 업데이트되었습니다.',
           status: 202,
-        }) : createResponse({
+        } : {
           message: '할 일을 찾을 수 없습니다.',
           status: 204,
-        });
+        };
     },
     deleteTodoItem: async (_: unknown, {
       uuid,
@@ -60,10 +69,10 @@ export const todoResolvers = {
       const itemIndex = todo?.content.findIndex((item) => item.id === id);
 
       if (!todo || itemIndex === undefined || itemIndex === -1)
-        return createResponse({
+        return {
           message: '할 일을 찾을 수 없습니다.',
           status: 204,
-        });
+        };
 
       const item = todo.content[itemIndex];
       if (item) {
@@ -71,10 +80,10 @@ export const todoResolvers = {
         await todo.save();
       }
 
-      return createResponse({
+      return {
         message: '할 일이 성공적으로 삭제되었습니다.',
         status: 200,
-      });
+      };
     },
   },
 };

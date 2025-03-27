@@ -4,7 +4,7 @@ export const todoTypeDefs = gql`
   type TTodoList {
     uuid: String!
     editKey: String!
-    content: [TContent!]!
+    content: [TContent]!
   }
 
   type TContent {

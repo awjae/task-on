@@ -1,6 +1,6 @@
 'use client';
 import { Fade, Modal, styled, Typography, TextField, Button, useTheme, Box } from '@mui/material';
-import { ChangeEvent, useCallback, useState } from 'react';
+import { ChangeEvent, useCallback, useEffect, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import toast from 'react-hot-toast';
 import { ISubmitDate } from '../_common/type';
@@ -20,16 +20,20 @@ export const ModalBox = styled('div')`
 `;
 
 export function ShareDialog({
+  editKey,
   open,
   onCloseAction,
   onSubmitAction
 }: {
+  editKey?: string;
   open: boolean;
   onCloseAction: () => void;
   onSubmitAction: (data: ISubmitDate) => void;
 }) {
+  console.log(editKey);
   const isClient = typeof window !== 'undefined';
-  const [password, setPassword] = useState('');
+  const [password, setPassword] = useState(editKey ?? '');
+  const [passwordLayer, setPasswordLayer] = useState(false);
   const theme = useTheme();
   const [uuid, setUUID] = useLocalStorageState('uuid', {
     defaultValue: isClient ? (localStorage.getItem('uuid') ?? '') : '',
@@ -49,12 +53,18 @@ export function ShareDialog({
     const shareLink = `${currentDomain}/share/${uuid}`;
     setShareURL(shareLink);
     setUUID(uuid);
+    setPasswordLayer(false);
     onSubmitAction({ uuid, password });
   }, [onSubmitAction, password, setUUID]);
 
   const handleClickCopy = () => {
     if (!shareURL)
       return undefined;
+
+    if (!password) {
+      setPasswordLayer(true);
+      return undefined;
+    }
 
     const newUUID = uuid ?? uuidv4();
     setUUID(newUUID);
@@ -63,6 +73,15 @@ export function ShareDialog({
     toast.success('링크가 클립보드에 복사되었습니다!');
   };
 
+  useEffect(() => {
+    if (!uuid)
+      return undefined;
+
+    setShareURL(`${window.location.origin}/share/${uuid}`);
+  },[uuid]);
+
+  console.log(password);
+
   return <Modal
     open={ open }
     closeAfterTransition
@@ -70,7 +89,7 @@ export function ShareDialog({
   >
     <Fade in={ open }>
       <ModalBox>
-        { !uuid && <>
+        { passwordLayer && <>
           <Typography
             component="h2"
             id="transition-modal-title"
@@ -101,7 +120,7 @@ export function ShareDialog({
             제출
           </Button>
         </> }
-        { uuid && <>
+        { !passwordLayer && <>
           <Box
             sx={ {
               backgroundColor: theme.palette.grey[200],
