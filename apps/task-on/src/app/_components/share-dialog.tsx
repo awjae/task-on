@@ -20,19 +20,16 @@ export const ModalBox = styled('div')`
 `;
 
 export function ShareDialog({
-  editKey,
   open,
   onCloseAction,
   onSubmitAction
 }: {
-  editKey?: string;
   open: boolean;
   onCloseAction: () => void;
   onSubmitAction: (data: ISubmitDate) => void;
 }) {
-  console.log(editKey);
   const isClient = typeof window !== 'undefined';
-  const [password, setPassword] = useState(editKey ?? '');
+  const [password, setPassword] = useState('');
   const [passwordLayer, setPasswordLayer] = useState(false);
   const theme = useTheme();
   const [uuid, setUUID] = useLocalStorageState('uuid', {

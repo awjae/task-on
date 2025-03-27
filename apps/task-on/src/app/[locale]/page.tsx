@@ -29,7 +29,6 @@ const todosQuery = gql`
     readTodo(uuid: $uuid) {
       data {
         uuid
-        editKey
         content {
           id
           text
@@ -153,7 +152,6 @@ export default function Index() {
           onClick={ handleOpenShareDialog }
         />
         <ShareDialog
-          editKey={ data?.readTodo.data?.editKey }
           open={ shareDialogOpen }
           onCloseAction={ handleCloseShareDialog }
           onSubmitAction={ handleSubmit }

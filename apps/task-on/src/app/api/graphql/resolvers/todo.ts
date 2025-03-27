@@ -18,17 +18,15 @@ export const todoResolvers = {
      }: {
       uuid: string; editKey: string; content: IContent[];
     }) => {
-
       const newTodo = new Todo({ uuid, editKey, content });
       try {
         await newTodo.save();
       } catch (error: unknown) {
-
         const mongooseError = error as { code: number };
 
         // duplicated uuid error
         if(mongooseError.code === 11000)
-          await Todo.findOneAndUpdate({ editKey, content });
+          await Todo.findOneAndUpdate({ uuid }, { editKey, content });
       }
 
       return {
@@ -41,7 +39,6 @@ export const todoResolvers = {
     }: {
       uuid: string; id: number; completed: boolean;
     }) => {
-
       const updatedTodo = await Todo.findOneAndUpdate(
         { uuid, 'content.id': id },
         { $set: { 'content.$.completed': completed } },
@@ -64,7 +61,6 @@ export const todoResolvers = {
       uuid: string;
       id: number;
     }) => {
-
       const todo = await Todo.findOne({ uuid });
       const itemIndex = todo?.content.findIndex((item) => item.id === id);
 
