@@ -12,7 +12,7 @@ import { checkAndConnectDB } from '@libs/mongoose';
  * 1. todoTypeDefs 정의
  * 2. resolver 정의
  * 3. Test 정의 + query 정의
- * 4. [front] codegen을 통해 리졸버들에 대한 타입을 갱신 (3에서 만들어둔 query 활용)
+ * 4. task-on:code-gen codegen 돌리기
  * 5. [front] api 연동
  */
 
