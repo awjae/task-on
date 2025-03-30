@@ -18,38 +18,44 @@ export const todoResolvers = {
      }: {
       uuid: string; editKey: string; contents: IContent[];
     }) => {
-      const newTodo = new Todo({ uuid, editKey, contents });
+      let newTodo = new Todo({ uuid, editKey, contents });
       try {
         await newTodo.save();
       } catch (error: unknown) {
         const mongooseError = error as { code: number };
 
         // duplicated uuid error
-        if(mongooseError.code === 11000)
-          await Todo.findOneAndUpdate({ uuid }, { editKey, contents });
+        if(mongooseError.code === 11000) {
+          const updateTodo = await Todo.findOneAndUpdate({ uuid }, { editKey, contents });
+          if (!updateTodo)
+            throw Error('생성 에러');
+
+          newTodo = updateTodo;
+        }
       }
 
       return {
         message: '할 일이 성공적으로 저장되었습니다.',
         status: 201,
+        data: newTodo,
       };
     },
     createTodoItem: async (_: unknown, {
       uuid,
-      contents,
+      content,
     }: {
       uuid: string;
-      contents: IContent[];
+      content: IContent;
     }) => {
       const updatedTodo = await Todo.findOneAndUpdate(
         { uuid },
-        { $set: { 'contents': contents } },
+        { $push: { 'contents': content } },
       );
 
       return updatedTodo ?
       {
         message: '할 일이 성공적으로 추가되었습니다.',
-        status: 202,
+        status: 201,
       } : {
         message: '할 일을 찾을 수 없습니다.',
         status: 204,
@@ -61,8 +67,8 @@ export const todoResolvers = {
       uuid: string; id: number; completed: boolean;
     }) => {
       const updatedTodo = await Todo.findOneAndUpdate(
-        { uuid, 'content.id': id },
-        { $set: { 'content.$.completed': completed } },
+        { uuid, 'contents.id': id },
+        { $set: { 'contents.$.completed': completed } },
         { new: true }
       );
 
@@ -83,8 +89,8 @@ export const todoResolvers = {
       id: number;
     }) => {
       const todo = await Todo.findOneAndUpdate(
-        { uuid, 'content.id': id },
-        { $set: { 'content.$.deleted': new Date() } },
+        { uuid, 'contents.id': id },
+        { $set: { 'contents.$.deleted': new Date() } },
         { new: true }
       );
 

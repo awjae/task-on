@@ -1,11 +1,25 @@
+export const readTodoQuery = `
+  query ReadTodo($uuid: String!) {
+    readTodo(uuid: $uuid) {
+      data {
+        uuid
+        contents {
+          id
+          text
+          completed
+        }
+      }
+    }
+  }
+`;
 export const createTodoQuery = `
   mutation CreateTodo($uuid: String!, $editKey: String!, $contents: [ContentInput!]!) {
     createTodo(uuid: $uuid, editKey: $editKey, contents: $contents) { status }
   }
 `;
 export const createTodoItemQuery = `
-  mutation CreateTodoItem($uuid: String!, $contents: [ContentInput!]!) {
-    createTodoItem(uuid: $uuid, contents: $contents) { status }
+  mutation CreateTodoItem($uuid: String!, $content: ContentInput!) {
+    createTodoItem(uuid: $uuid, content: $content) { status }
   }
 `;
 export const updateTodoItemQuery = `

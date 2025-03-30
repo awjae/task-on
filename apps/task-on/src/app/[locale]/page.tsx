@@ -8,35 +8,28 @@ import { Header, HeaderButtonBox, StyledPage, TodoInputBox, TodoListBox } from '
 import { ShareDialog } from '../_components/share-dialog';
 import { ImportDialog } from '../_components/import-dialog';
 import { IContent, ISubmitDate } from '../_common/type';
-import { gql, useMutation, useQuery } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client';
+import { gql } from 'graphql-tag';
 import Container from './container';
 import useLocalStorageState from 'use-local-storage-state';
 import toast from 'react-hot-toast';
 import {
   Mutation, MutationCreateTodoArgs, MutationCreateTodoItemArgs, MutationDeleteTodoItemArgs,
-  MutationUpdateCompletedTodoArgs, ReadTodoQuery, ReadTodoQueryVariables,
+  MutationUpdateCompletedTodoArgs, Query,
+  QueryReadTodoArgs,
 } from '../../../graphql-codegen/generated';
 import { useTranslations } from 'next-intl';
 import {
   createTodoQuery as createQuery,
   updateTodoItemQuery as updateItemQuery,
   deleteTodoItemQuery as deleteItemQuery,
-  createTodoItemQuery as createItemQuery
+  createTodoItemQuery as createItemQuery,
+  readTodoQuery
 } from '../api/graphql/queries/todo';
 
+// TODO: 전부 추상화해두면 ts, 혹은 tsx 에 following point가 없어서 codegen이 되지않음
 const todosQuery = gql`
-  query ReadTodo($uuid: String!) {
-    readTodo(uuid: $uuid) {
-      data {
-        uuid
-        content {
-          id
-          text
-          completed
-        }
-      }
-    }
-  }
+  ${readTodoQuery}
 `;
 const createTodoQuery = gql`
   ${createQuery}
@@ -69,7 +62,7 @@ export default function Index() {
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
   const [importDialogOpen, setImportDialogOpen] = useState(false);
 
-  const { loading, data } = useQuery<ReadTodoQuery, ReadTodoQueryVariables>(
+  const { loading, data } = useQuery<Query, QueryReadTodoArgs>(
     todosQuery, { variables: { uuid }, skip: !uuid }
   );
   const [createTodo] =
@@ -83,17 +76,18 @@ export default function Index() {
 
   const addTodo = useCallback(() => {
     if (newTodo.trim()) {
-      const currentTodos: IContent[] = [...todos, {
+      const newItem = {
         id: Date.now(),
         text: newTodo.trim(),
         completed: false
-      }];
+      };
+
+      const currentTodos: IContent[] = [...todos, newItem];
       setTodos(currentTodos);
       setNewTodo('');
 
-      console.log({ uuid, contents: currentTodos });
       if (uuid)
-        createTodoItem({ variables: { uuid, contents: currentTodos } });
+        createTodoItem({ variables: { uuid, content: newItem } });
     }
   }, [createTodoItem, newTodo, setTodos, todos, uuid]);
 
@@ -136,7 +130,7 @@ export default function Index() {
 
   useEffect(() => {
     if (!loading && data?.readTodo) {
-      const content = data.readTodo.data?.content ?? [];
+      const content = data.readTodo.data?.contents ?? [];
       const originIds = new Set(todos.map(todo => todo.id));
       const filteredTodo = content.filter(todo => !originIds.has(todo.id));
       setTodos(prev => prev.concat(filteredTodo));

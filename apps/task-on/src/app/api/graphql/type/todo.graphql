@@ -1,6 +1,4 @@
-import gql from 'graphql-tag';
 
-export const todoTypeDefs = gql`
   type TTodoList {
     uuid: String!
     editKey: String!
@@ -40,4 +38,3 @@ export const todoTypeDefs = gql`
     updateCompletedTodo(uuid: String!, id: Float!, completed: Boolean!): TTodoItemResponse
     deleteTodoItem(uuid: String!, id: Float!): TTodoItemResponse
   }
-`;

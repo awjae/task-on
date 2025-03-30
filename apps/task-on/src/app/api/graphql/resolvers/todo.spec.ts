@@ -4,7 +4,9 @@ import { todoTypeDefs } from '../type/todo';
 import { todoResolvers } from '../resolvers/todo';
 import { gql } from 'graphql-tag';
 import { v4 } from 'uuid';
-import { createTodoQuery, deleteTodoItemQuery, updateTodoItemQuery } from '../queries/todo';
+import {
+  createTodoItemQuery, createTodoQuery, deleteTodoItemQuery, updateTodoItemQuery
+} from '../queries/todo.ts';
 import mongoose from 'mongoose';
 
 const mongoURI = process.env['TEST_MONGODB_URI'] ?? '';
@@ -26,7 +28,11 @@ const server = new ApolloServer({
 const tempEditKey = '1234';
 
 beforeAll(async () => {
-  await mongoose.connect(mongoURI);
+  try {
+    await mongoose.connect(mongoURI);
+  } catch  {
+    console.log('Docker Container 확인');
+  }
 });
 afterAll(async () => {
   await mongoose.disconnect();
@@ -39,13 +45,40 @@ describe('Todo Resolvers', () => {
       variables: {
         uuid: v4(),
         editKey: tempEditKey,
-        content: [{ id: new Date().getTime(), text: 'New Todo', completed: false }],
+        contents: [{ id: new Date().getTime(), text: 'New Todo', completed: false }],
       },
     });
 
     const data = response.body['singleResult'].data;
     expect(data.createTodo).toBeDefined();
     expect(data.createTodo.status).toBe(201);
+  });
+
+  it('should create a new in todo', async () => {
+    const uuid = v4();
+    const id = new Date().getTime();
+
+    await server.executeOperation({
+      query: createTodoQuery,
+      variables: {
+        uuid,
+        editKey: tempEditKey,
+        contents: [{ id, text: 'Test Todo', completed: false }],
+      },
+    });
+
+    const response = await server.executeOperation({
+      query: createTodoItemQuery,
+      variables: {
+        uuid,
+        content: { id, text: 'Test Todo 2', completed: false },
+      },
+    });
+
+    const data = response.body['singleResult'].data;
+    console.log(response);
+    expect(data.createTodoItem).toBeDefined();
+    expect(data.createTodoItem.status).toBe(201);
   });
 
   it('should update(complete) todo', async () => {
@@ -57,7 +90,7 @@ describe('Todo Resolvers', () => {
       variables: {
         uuid,
         editKey: tempEditKey,
-        content: [{ id, text: 'Test Todo', completed: false }],
+        contents: [{ id, text: 'Test Todo', completed: false }],
       },
     });
 
@@ -84,7 +117,7 @@ describe('Todo Resolvers', () => {
       variables: {
         uuid,
         editKey: tempEditKey,
-        content: [{ id, text: 'Todo to Delete', completed: false }],
+        contents: [{ id, text: 'Todo to Delete', completed: false }],
       },
     });
 

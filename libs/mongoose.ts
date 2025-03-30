@@ -40,7 +40,7 @@ mongoose.connection.on('disconnected', () => {
 
 const todoSchema = new mongoose.Schema({
   uuid: { type: String, required: true, unique: true }, // 공유용 UUID
-  content: { type: Array, required: true }, // 투두리스트 데이터 (JSON 형태)
+  contents: { type: Array, required: true }, // 투두리스트 데이터 (JSON 형태)
   editKey: { type: String }, // 편집용 비밀번호 (해시 저장)
   createdAt: { type: Date, default: Date.now }, // 생성 시간
   deletedAt: { type: Date, default: null } // 삭제된 시간 (소프트 삭제)
@@ -63,7 +63,7 @@ todoSchema.pre(/^find/, function (next) {
 // soft deleted 미들웨어 설정 (JSON 변환 시) - 대상이 todo가 아니라 content임
 todoSchema.set('toJSON', {
   transform: (doc, ret) => {
-    ret['content'] = ret['content'].filter((item: IContent) => !item.deleted);
+    ret['contents'] = ret['contents'].filter((item: IContent) => !item.deleted);
     return ret;
   },
 });
@@ -75,7 +75,7 @@ todoSchema.methods['compareEditKey'] = async function (inputKey: string) {
 
 interface ITodo extends Document {
   uuid: string;
-  content: IContent[];
+  contents: IContent[];
   createdAt: Date;
   editKey?: string | null;
   deletedAt?: Date | null;

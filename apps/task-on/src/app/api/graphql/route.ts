@@ -7,6 +7,15 @@ import { todoTypeDefs } from './type/todo';
 import { todoResolvers } from './resolvers/todo';
 import { checkAndConnectDB } from '@libs/mongoose';
 
+/**
+ * NOTE: API 만드는 절차
+ * 1. todoTypeDefs 정의
+ * 2. resolver 정의
+ * 3. Test 정의 + query 정의
+ * 4. [front] codegen을 통해 리졸버들에 대한 타입을 갱신 (3에서 만들어둔 query 활용)
+ * 5. [front] api 연동
+ */
+
 const typeDefs = gql`
   ${commonTypeDefs}
   ${todoTypeDefs}

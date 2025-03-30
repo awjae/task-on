@@ -26,15 +26,14 @@
     "update-schema": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "npx graphql-codegen introspect --schema http://localhost:3000/api/graphql --output apps/task-on/codegen/schema.json --config apps/task-on/graphql-codegen/codegen.ts"
+        "command": "npx graphql-codegen introspect --schema http://localhost:3000/api/graphql --output apps/task-on/graphql-codegen/schema.json --config apps/task-on/graphql-codegen/jsongen.ts"
       }
     },
     "codegen": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "npx graphql-codegen --config apps/task-on/graphql-codegen/codegen.ts"
-      },
-      "dependsOn": ["update-schema"]
+        "command": "node apps/task-on/graphql-codegen/copy-graphql && npx graphql-codegen --config apps/task-on/graphql-codegen/codegen-from-api.ts"
+      }
     }
   }
 }
