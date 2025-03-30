@@ -4,7 +4,7 @@ export const todoTypeDefs = gql`
   type TTodoList {
     uuid: String!
     editKey: String!
-    content: [TContent]!
+    content: [TContent!]!
   }
 
   type TContent {
@@ -35,7 +35,8 @@ export const todoTypeDefs = gql`
   }
 
   type Mutation {
-    createTodo(uuid: String!, editKey: String!, content: [ContentInput!]!): TTodoItemResponse
+    createTodo(uuid: String!, editKey: String!, contents: [ContentInput!]!): TTodoItemResponse
+    createTodoItem(uuid: String!, contents: [ContentInput!]!): TTodoItemResponse
     updateCompletedTodo(uuid: String!, id: Float!, completed: Boolean!): TTodoItemResponse
     deleteTodoItem(uuid: String!, id: Float!): TTodoItemResponse
   }

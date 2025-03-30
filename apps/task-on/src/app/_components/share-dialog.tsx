@@ -77,8 +77,6 @@ export function ShareDialog({
     setShareURL(`${window.location.origin}/share/${uuid}`);
   },[uuid]);
 
-  console.log(password);
-
   return <Modal
     open={ open }
     closeAfterTransition

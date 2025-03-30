@@ -1,6 +1,11 @@
 export const createTodoQuery = `
-  mutation CreateTodo($uuid: String!, $editKey: String!, $content: [ContentInput!]!) {
-    createTodo(uuid: $uuid, editKey: $editKey, content: $content) { status }
+  mutation CreateTodo($uuid: String!, $editKey: String!, $contents: [ContentInput!]!) {
+    createTodo(uuid: $uuid, editKey: $editKey, contents: $contents) { status }
+  }
+`;
+export const createTodoItemQuery = `
+  mutation CreateTodoItem($uuid: String!, $contents: [ContentInput!]!) {
+    createTodoItem(uuid: $uuid, contents: $contents) { status }
   }
 `;
 export const updateTodoItemQuery = `

@@ -13,15 +13,15 @@ import Container from './container';
 import useLocalStorageState from 'use-local-storage-state';
 import toast from 'react-hot-toast';
 import {
-  CreateTodoMutation, CreateTodoMutationVariables, DeleteTodoItemMutation,
-  DeleteTodoItemMutationVariables, ReadTodoQuery, ReadTodoQueryVariables,
-  UpdateCompletedTodoMutation, UpdateCompletedTodoMutationVariables,
+  Mutation, MutationCreateTodoArgs, MutationCreateTodoItemArgs, MutationDeleteTodoItemArgs,
+  MutationUpdateCompletedTodoArgs, ReadTodoQuery, ReadTodoQueryVariables,
 } from '../../../graphql-codegen/generated';
 import { useTranslations } from 'next-intl';
 import {
   createTodoQuery as createQuery,
   updateTodoItemQuery as updateItemQuery,
-  deleteTodoItemQuery as deleteItemQuery
+  deleteTodoItemQuery as deleteItemQuery,
+  createTodoItemQuery as createItemQuery
 } from '../api/graphql/queries/todo';
 
 const todosQuery = gql`
@@ -41,6 +41,9 @@ const todosQuery = gql`
 const createTodoQuery = gql`
   ${createQuery}
 `;
+const createTodoItemQuery = gql`
+  ${createItemQuery}
+`;
 const updateTodoQuery = gql`
   ${updateItemQuery}
 `;
@@ -57,7 +60,7 @@ export default function Index() {
       JSON.parse(localStorage.getItem('todos') || '[]') : [],
     defaultServerValue: [],
   });
-  const [uuid] = useLocalStorageState<string>('uuid', {
+  const [uuid, setUUID] = useLocalStorageState<string>('uuid', {
     defaultValue: isClient ? (localStorage.getItem('uuid') ?? '') : '',
     defaultServerValue: '',
   });
@@ -70,11 +73,13 @@ export default function Index() {
     todosQuery, { variables: { uuid }, skip: !uuid }
   );
   const [createTodo] =
-    useMutation<CreateTodoMutation, CreateTodoMutationVariables>(createTodoQuery);
+    useMutation<Mutation, MutationCreateTodoArgs>(createTodoQuery);
+  const [createTodoItem] =
+    useMutation<Mutation, MutationCreateTodoItemArgs>(createTodoItemQuery);
   const [updateCompletedTodo] =
-    useMutation<UpdateCompletedTodoMutation, UpdateCompletedTodoMutationVariables>(updateTodoQuery);
+    useMutation<Mutation, MutationUpdateCompletedTodoArgs>(updateTodoQuery);
   const [deleteTodoItem] =
-    useMutation<DeleteTodoItemMutation, DeleteTodoItemMutationVariables>(deleteTodoItemQuery);
+    useMutation<Mutation, MutationDeleteTodoItemArgs>(deleteTodoItemQuery);
 
   const addTodo = useCallback(() => {
     if (newTodo.trim()) {
@@ -85,35 +90,43 @@ export default function Index() {
       }];
       setTodos(currentTodos);
       setNewTodo('');
+
+      console.log({ uuid, contents: currentTodos });
+      if (uuid)
+        createTodoItem({ variables: { uuid, contents: currentTodos } });
     }
-  }, [newTodo, setTodos, todos]);
+  }, [createTodoItem, newTodo, setTodos, todos, uuid]);
 
   const toggleTodo = useCallback(async (id: number, checked: boolean) => {
     setTodos(todos.map(todo =>
       todo.id === id ? { ...todo, completed: checked } : todo
     ));
 
-    await updateCompletedTodo({ variables: { uuid, id, completed: checked } });
+    if(uuid)
+      await updateCompletedTodo({ variables: { uuid, id, completed: checked } });
   }, [setTodos, todos, updateCompletedTodo, uuid]);
 
   const deleteTodo = useCallback(async (id: number) => {
     setTodos(todos.filter(todo => todo.id !== id));
 
-    await deleteTodoItem({ variables: { uuid, id}});
+    if(uuid)
+      await deleteTodoItem({ variables: { uuid, id}});
   }, [deleteTodoItem, setTodos, todos, uuid]);
 
-  const handleSubmit = useCallback(async ({ uuid, password }: ISubmitDate) => {
+  const handleShareSubmit = useCallback(async ({ uuid, password }: ISubmitDate) => {
     await createTodo({
       variables: {
         uuid,
         editKey: password,
-        content: todos,
+        contents: todos,
       },
     }).catch(error => {
       console.error(error);
       toast.error('서버 에러. 잠시 후, 다시 시도해주세요.');
+    }).then(() => {
+      setUUID(uuid);
     });
-  }, [createTodo, todos]);
+  }, [createTodo, setUUID, todos]);
 
   const handleOpenShareDialog = () => setShareDialogOpen(true);
   const handleCloseShareDialog = () => setShareDialogOpen(false);
@@ -154,7 +167,7 @@ export default function Index() {
         <ShareDialog
           open={ shareDialogOpen }
           onCloseAction={ handleCloseShareDialog }
-          onSubmitAction={ handleSubmit }
+          onSubmitAction={ handleShareSubmit }
         />
       </HeaderButtonBox>
 
@@ -163,8 +176,8 @@ export default function Index() {
           placeholder={ t('addInputPlaceholder') }
           type="text"
           value={ newTodo }
-          onChange={ (e) => setNewTodo(e.target.value) }
-          onKeyDown={ (e) => e.key === 'Enter' && addTodo() }
+          onChange={ (event) => setNewTodo(event.target.value) }
+          onKeyDown={ (event) => event.key === 'Enter' && addTodo() }
         />
         <button onClick={ addTodo }>
           { t('add') }
