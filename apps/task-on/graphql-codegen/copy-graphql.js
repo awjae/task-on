@@ -16,7 +16,7 @@ jsfiles.forEach((file) => {
     const extractedData = extractData[1];
 
     // 출력 파일 경로 (파일명 그대로 저장)
-    const outputFilePath = file.replace('.ts', '.graphql');
+    const outputFilePath = file.replace('.ts', '.graphql').replace('type', `type\\_graphql`);
 
     // 변환된 TypeScript 코드 파일로 저장
     fs.writeFile(outputFilePath, extractedData, 'utf8', (err) => {

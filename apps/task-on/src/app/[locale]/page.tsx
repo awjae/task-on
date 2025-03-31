@@ -27,7 +27,6 @@ import {
   readTodoQuery
 } from '../api/graphql/queries/todo';
 
-// TODO: 전부 추상화해두면 ts, 혹은 tsx 에 following point가 없어서 codegen이 되지않음
 const todosQuery = gql`
   ${readTodoQuery}
 `;
