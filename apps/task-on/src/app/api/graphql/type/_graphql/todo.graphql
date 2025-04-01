@@ -1,7 +1,6 @@
 
   type TTodoList {
     uuid: String!
-    editKey: String!
     contents: [TContent!]!
   }
 
@@ -33,7 +32,7 @@
   }
 
   type Mutation {
-    createTodo(uuid: String!, editKey: String!, contents: [ContentInput!]!): TTodoItemResponse
+    createTodo(uuid: String!, contents: [ContentInput!]!): TTodoItemResponse
     createTodoItem(uuid: String!, content: ContentInput!): TTodoItemResponse
     updateCompletedTodo(uuid: String!, id: Float!, completed: Boolean!): TTodoItemResponse
     deleteTodoItem(uuid: String!, id: Float!): TTodoItemResponse

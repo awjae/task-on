@@ -41,7 +41,9 @@ mongoose.connection.on('disconnected', () => {
 const todoSchema = new mongoose.Schema({
   uuid: { type: String, required: true, unique: true }, // 공유용 UUID
   contents: { type: Array, required: true }, // 투두리스트 데이터 (JSON 형태)
+  /** @deprecated */
   editKey: { type: String }, // 편집용 비밀번호 (해시 저장)
+  isShared: { type: Boolean, default: false }, // uuid 공유 여부
   createdAt: { type: Date, default: Date.now }, // 생성 시간
   deletedAt: { type: Date, default: null } // 삭제된 시간 (소프트 삭제)
 });
@@ -78,6 +80,7 @@ interface ITodo extends Document {
   contents: IContent[];
   createdAt: Date;
   editKey?: string | null;
+  isShared: boolean;
   deletedAt?: Date | null;
 }
 

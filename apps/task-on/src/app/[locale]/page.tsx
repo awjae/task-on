@@ -7,7 +7,7 @@ import TodoItem from '../_components/todo-item';
 import { Header, HeaderButtonBox, StyledPage, TodoInputBox, TodoListBox } from './styles';
 import { ShareDialog } from '../_components/share-dialog';
 import { ImportDialog } from '../_components/import-dialog';
-import { IContent, ISubmitDate } from '../_common/type';
+import { IContent } from '../_common/type';
 import { useMutation, useQuery } from '@apollo/client';
 import { gql } from 'graphql-tag';
 import Container from './container';
@@ -106,11 +106,10 @@ export default function Index() {
       await deleteTodoItem({ variables: { uuid, id}});
   }, [deleteTodoItem, setTodos, todos, uuid]);
 
-  const handleShareSubmit = useCallback(async ({ uuid, password }: ISubmitDate) => {
+  const handleShareSubmit = useCallback(async (uuid: string) => {
     await createTodo({
       variables: {
         uuid,
-        editKey: password,
         contents: todos,
       },
     }).catch(error => {

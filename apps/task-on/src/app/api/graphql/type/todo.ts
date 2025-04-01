@@ -3,7 +3,6 @@ import gql from 'graphql-tag';
 export const todoTypeDefs = gql`
   type TTodoList {
     uuid: String!
-    editKey: String!
     contents: [TContent!]!
   }
 
@@ -35,7 +34,7 @@ export const todoTypeDefs = gql`
   }
 
   type Mutation {
-    createTodo(uuid: String!, editKey: String!, contents: [ContentInput!]!): TTodoItemResponse
+    createTodo(uuid: String!, contents: [ContentInput!]!): TTodoItemResponse
     createTodoItem(uuid: String!, content: ContentInput!): TTodoItemResponse
     updateCompletedTodo(uuid: String!, id: Float!, completed: Boolean!): TTodoItemResponse
     deleteTodoItem(uuid: String!, id: Float!): TTodoItemResponse

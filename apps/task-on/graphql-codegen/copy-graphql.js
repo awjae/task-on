@@ -15,6 +15,8 @@ jsfiles.forEach((file) => {
     const extractData = data.match(/gql`([\s\S]+?)`;/);
     const extractedData = extractData[1];
 
+    console.log(file)
+
     // 출력 파일 경로 (파일명 그대로 저장)
     const outputFilePath = file.replace('.ts', '.graphql').replace('type', `type\\_graphql`);
 

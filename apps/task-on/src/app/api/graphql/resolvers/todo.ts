@@ -14,11 +14,11 @@ export const todoResolvers = {
   },
   Mutation: {
     createTodo: async (_: unknown, {
-      uuid, editKey, contents
+      uuid, contents
      }: {
-      uuid: string; editKey: string; contents: IContent[];
+      uuid: string; contents: IContent[];
     }) => {
-      let newTodo = new Todo({ uuid, editKey, contents });
+      let newTodo = new Todo({ uuid, contents, isShared: true });
       try {
         await newTodo.save();
       } catch (error: unknown) {
@@ -26,7 +26,7 @@ export const todoResolvers = {
 
         // duplicated uuid error
         if(mongooseError.code === 11000) {
-          const updateTodo = await Todo.findOneAndUpdate({ uuid }, { editKey, contents });
+          const updateTodo = await Todo.findOneAndUpdate({ uuid }, { isShared: true, contents });
           if (!updateTodo)
             throw Error('생성 에러');
 

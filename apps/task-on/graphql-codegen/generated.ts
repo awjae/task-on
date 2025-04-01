@@ -32,7 +32,6 @@ export type Mutation = {
 
 export type MutationCreateTodoArgs = {
   contents: Array<ContentInput>;
-  editKey: Scalars['String']['input'];
   uuid: Scalars['String']['input'];
 };
 
@@ -87,7 +86,6 @@ export type TTodoItemResponse = TResponse & {
 export type TTodoList = {
   __typename?: 'TTodoList';
   contents: Array<TContent>;
-  editKey: Scalars['String']['output'];
   uuid: Scalars['String']['output'];
 };
 
