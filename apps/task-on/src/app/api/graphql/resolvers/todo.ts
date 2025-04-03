@@ -92,13 +92,15 @@ export const todoResolvers = {
       uuid: string;
       operations: object
     }) => {
+      // TODO: general 한 api를 개발한 것은 좋지만, valid field에 대한 것을 제한 하는 것이 필요할 듯
+
       if (!operations || Object.keys(operations).length === 0)
         throw new Error('변경사항이 없습니다.');
 
       if(Object.keys(operations).includes('isShared')) {
         const targetItem = await Todo.findOne({ uuid });
         if (targetItem && !targetItem.isShared)
-          throw new Error('공유되지 않은 리스트입니다.'); // 추가된 부분
+          throw new Error('공유되지 않은 리스트입니다.');
       }
 
       const updatedItem = await Todo.findOneAndUpdate(
