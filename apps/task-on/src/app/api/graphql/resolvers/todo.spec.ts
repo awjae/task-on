@@ -5,7 +5,8 @@ import { todoResolvers } from '../resolvers/todo';
 import { gql } from 'graphql-tag';
 import { v4 } from 'uuid';
 import {
-  createTodoItemQuery, createTodoQuery, deleteTodoItemQuery, updateTodoItemQuery
+  createTodoItemQuery, createTodoQuery, deleteTodoItemQuery, updateTodoItemQuery,
+  updateTodoQuery
 } from '../queries/todo.ts';
 import mongoose from 'mongoose';
 
@@ -44,7 +45,6 @@ describe('Todo Resolvers', () => {
       query: createTodoQuery,
       variables: {
         uuid: v4(),
-        editKey: tempEditKey,
         contents: [{ id: new Date().getTime(), text: 'New Todo', completed: false }],
       },
     });
@@ -62,7 +62,6 @@ describe('Todo Resolvers', () => {
       query: createTodoQuery,
       variables: {
         uuid,
-        editKey: tempEditKey,
         contents: [{ id, text: 'Test Todo', completed: false }],
       },
     });
@@ -76,7 +75,6 @@ describe('Todo Resolvers', () => {
     });
 
     const data = response.body['singleResult'].data;
-    console.log(response);
     expect(data.createTodoItem).toBeDefined();
     expect(data.createTodoItem.status).toBe(201);
   });
@@ -89,7 +87,6 @@ describe('Todo Resolvers', () => {
       query: createTodoQuery,
       variables: {
         uuid,
-        editKey: tempEditKey,
         contents: [{ id, text: 'Test Todo', completed: false }],
       },
     });
@@ -116,7 +113,6 @@ describe('Todo Resolvers', () => {
       query: createTodoQuery,
       variables: {
         uuid,
-        editKey: tempEditKey,
         contents: [{ id, text: 'Todo to Delete', completed: false }],
       },
     });
@@ -132,5 +128,48 @@ describe('Todo Resolvers', () => {
     const data = response.body['singleResult'].data;
     expect(data.deleteTodoItem).toBeDefined();
     expect(data.deleteTodoItem.status).toBe(200);
+  });
+
+  it('should update using operation todo', async () => {
+    const uuid = v4();
+
+    await server.executeOperation({
+      query: createTodoQuery,
+      variables: {
+        uuid,
+        contents: [{ id: new Date().getTime(), text: 'New Todo', completed: false }],
+      },
+    });
+
+    const response1 = await server.executeOperation({
+      query: updateTodoQuery,
+      variables: {
+        uuid,
+        operations: {
+          'isShared': false,
+        }
+      },
+    });
+
+    const data1 = response1.body['singleResult'].data;
+    expect(data1.updateTodo).toBeDefined();
+    expect(data1.updateTodo.status).toBe(200);
+    expect(data1.updateTodo.data.isShared).toBe(false);
+
+    const response2 = await server.executeOperation({
+      query: updateTodoQuery,
+      variables: {
+        uuid,
+        operations: {
+          'contents': [{ id: new Date().getTime(), text: 'New Todo', completed: false }],
+        }
+      },
+    });
+
+    const data2 = response2.body['singleResult'].data;
+    expect(data2.updateTodo).toBeDefined();
+    expect(data2.updateTodo.status).toBe(200);
+    expect(data2.updateTodo.data.isShared).toBe(false);
+
   });
 });

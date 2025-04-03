@@ -38,9 +38,16 @@ mongoose.connection.on('disconnected', () => {
   isConnected = false;
 });
 
+const contentSchema = new mongoose.Schema({
+  id: { type: Number, require: true },
+  text: { type: String },
+  completed: { type: Boolean },
+  deleted: { type: Date, default: null },
+})
+
 const todoSchema = new mongoose.Schema({
   uuid: { type: String, required: true, unique: true }, // 공유용 UUID
-  contents: { type: Array, required: true }, // 투두리스트 데이터 (JSON 형태)
+  contents: { type: [contentSchema], required: true }, // sub doc 방식
   /** @deprecated */
   editKey: { type: String }, // 편집용 비밀번호 (해시 저장)
   isShared: { type: Boolean, default: false }, // uuid 공유 여부
