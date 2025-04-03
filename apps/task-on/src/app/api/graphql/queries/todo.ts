@@ -13,8 +13,8 @@ export const readTodoQuery = `
   }
 `;
 export const createTodoQuery = `
-  mutation CreateTodo($uuid: String!, $editKey: String!, $contents: [ContentInput!]!) {
-    createTodo(uuid: $uuid, editKey: $editKey, contents: $contents) { status }
+  mutation CreateTodo($uuid: String!, $contents: [ContentInput!]!) {
+    createTodo(uuid: $uuid, contents: $contents) { status }
   }
 `;
 export const createTodoItemQuery = `
@@ -28,8 +28,8 @@ export const updateTodoItemQuery = `
   }
 `;
 export const updateTodoQuery = `
-  mutation UpdateTodo($uuid: String!) {
-    updateTodo(uuid: $uuid, operations: JSON!) { status }
+  mutation UpdateTodo($uuid: String!, $operations: JSON!) {
+    updateTodo(uuid: $uuid, operations: $operations) { status data { isShared } }
   }
 `;
 export const deleteTodoItemQuery = `

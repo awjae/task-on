@@ -1,6 +1,8 @@
 import { Todo } from '@libs/mongoose';
 import { IContent } from '../../../_common/type';
 
+// TODO: ERROR Message 모듈화 필요
+
 export const todoResolvers = {
   Query: {
     readTodo: async (_: unknown, { uuid }: { uuid: string }) => {
@@ -26,7 +28,9 @@ export const todoResolvers = {
 
         // duplicated uuid error
         if(mongooseError.code === 11000) {
-          const updateTodo = await Todo.findOneAndUpdate({ uuid }, { isShared: true, contents });
+          const updateTodo = await Todo.findOneAndUpdate(
+            { uuid }, { $set: { isShared: true, contents }}
+          );
           if (!updateTodo)
             throw Error('생성 에러');
 
@@ -81,18 +85,30 @@ export const todoResolvers = {
           status: 204,
         };
     },
-    updateTodo: async (_: unknown, { uuid, operations }: { uuid: string; operations: object}) => {
+    updateTodo: async (_: unknown, {
+      uuid,
+      operations
+    }: {
+      uuid: string;
+      operations: object
+    }) => {
       if (!operations || Object.keys(operations).length === 0)
-        throw new Error('No fields to update');
+        throw new Error('변경사항이 없습니다.');
 
-      const updatedItem = await Todo.findByIdAndUpdate(
-        uuid,
+      if(Object.keys(operations).includes('isShared')) {
+        const targetItem = await Todo.findOne({ uuid });
+        if (targetItem && !targetItem.isShared)
+          throw new Error('공유되지 않은 리스트입니다.'); // 추가된 부분
+      }
+
+      const updatedItem = await Todo.findOneAndUpdate(
+        { uuid },
         { $set: operations },
         { new: true, runValidators: true }
       );
 
       if (!updatedItem)
-        throw new Error('Item not found');
+        throw new Error('리스트를 찾을 수 없습니다.');
 
       return {
           message: '할 일이 성공적으로 업데이트되었습니다.',

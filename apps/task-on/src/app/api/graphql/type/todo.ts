@@ -3,6 +3,7 @@ import gql from 'graphql-tag';
 export const todoTypeDefs = gql`
   type TTodoList {
     uuid: String!
+    isShared: Boolean
     contents: [TContent!]!
   }
 

@@ -94,6 +94,7 @@ export type TTodoItemResponse = TResponse & {
 export type TTodoList = {
   __typename?: 'TTodoList';
   contents: Array<TContent>;
+  isShared?: Maybe<Scalars['Boolean']['output']>;
   uuid: Scalars['String']['output'];
 };
 

@@ -1,6 +1,7 @@
 
   type TTodoList {
     uuid: String!
+    isShared: Boolean
     contents: [TContent!]!
   }
 
