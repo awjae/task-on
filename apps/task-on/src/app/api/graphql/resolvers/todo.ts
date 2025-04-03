@@ -81,6 +81,25 @@ export const todoResolvers = {
           status: 204,
         };
     },
+    updateTodo: async (_: unknown, { uuid, operations }: { uuid: string; operations: object}) => {
+      if (!operations || Object.keys(operations).length === 0)
+        throw new Error('No fields to update');
+
+      const updatedItem = await Todo.findByIdAndUpdate(
+        uuid,
+        { $set: operations },
+        { new: true, runValidators: true }
+      );
+
+      if (!updatedItem)
+        throw new Error('Item not found');
+
+      return {
+          message: '할 일이 성공적으로 업데이트되었습니다.',
+          status: 200,
+          data: updatedItem
+        };
+    },
     deleteTodoItem: async (_: unknown, {
       uuid,
       id,

@@ -37,6 +37,7 @@ export const todoTypeDefs = gql`
     createTodo(uuid: String!, contents: [ContentInput!]!): TTodoItemResponse
     createTodoItem(uuid: String!, content: ContentInput!): TTodoItemResponse
     updateCompletedTodo(uuid: String!, id: Float!, completed: Boolean!): TTodoItemResponse
+    updateTodo(uuid: String!, operations: JSON!): TTodoResponse
     deleteTodoItem(uuid: String!, id: Float!): TTodoItemResponse
   }
 `;

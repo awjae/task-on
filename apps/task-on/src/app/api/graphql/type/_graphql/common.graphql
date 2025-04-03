@@ -1,4 +1,6 @@
 
+  scalar JSON
+
   interface TResponse {
     message: String
     status: Int!

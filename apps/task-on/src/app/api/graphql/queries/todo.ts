@@ -27,6 +27,11 @@ export const updateTodoItemQuery = `
     updateCompletedTodo(uuid: $uuid, id: $id, completed: $completed) { status }
   }
 `;
+export const updateTodoQuery = `
+  mutation UpdateTodo($uuid: String!) {
+    updateTodo(uuid: $uuid, operations: JSON!) { status }
+  }
+`;
 export const deleteTodoItemQuery = `
   mutation DeleteTodoItem($uuid: String!, $id: Float!) {
     deleteTodoItem(uuid: $uuid, id: $id) { status }

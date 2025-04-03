@@ -13,6 +13,7 @@ export type Scalars = {
   Boolean: { input: boolean; output: boolean; }
   Int: { input: number; output: number; }
   Float: { input: number; output: number; }
+  JSON: { input: any; output: any; }
 };
 
 export type ContentInput = {
@@ -27,6 +28,7 @@ export type Mutation = {
   createTodoItem?: Maybe<TTodoItemResponse>;
   deleteTodoItem?: Maybe<TTodoItemResponse>;
   updateCompletedTodo?: Maybe<TTodoItemResponse>;
+  updateTodo?: Maybe<TTodoResponse>;
 };
 
 
@@ -51,6 +53,12 @@ export type MutationDeleteTodoItemArgs = {
 export type MutationUpdateCompletedTodoArgs = {
   completed: Scalars['Boolean']['input'];
   id: Scalars['Float']['input'];
+  uuid: Scalars['String']['input'];
+};
+
+
+export type MutationUpdateTodoArgs = {
+  operations: Scalars['JSON']['input'];
   uuid: Scalars['String']['input'];
 };
 

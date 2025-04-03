@@ -1,6 +1,8 @@
 import gql from 'graphql-tag';
 
 export const commonTypeDefs = gql`
+  scalar JSON
+
   interface TResponse {
     message: String
     status: Int!
