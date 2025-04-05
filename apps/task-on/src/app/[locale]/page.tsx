@@ -1,12 +1,10 @@
 'use client';
-import FileUploadIcon from '@mui/icons-material/FileUpload';
-import FileDownloadIcon from '@mui/icons-material/FileDownload';
+import ShareIcon from '@mui/icons-material/Share';
 import { Button } from '@mui/material';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import TodoItem from '../_components/todo-item';
 import { Header, HeaderButtonBox, StyledPage, TodoInputBox, TodoListBox } from './styles';
 import { ShareDialog } from '../_components/share-dialog';
-import { ImportDialog } from '../_components/import-dialog';
 import { IContent } from '../_common/type';
 import { useMutation, useQuery } from '@apollo/client';
 import { gql } from 'graphql-tag';
@@ -59,7 +57,8 @@ export default function Index() {
 
   const [newTodo, setNewTodo] = useState('');
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
-  const [importDialogOpen, setImportDialogOpen] = useState(false);
+
+  const todoList = useMemo(() => todos.map(todo => ({ ...todo })), [todos]);
 
   const { loading, data } = useQuery<Query, QueryReadTodoArgs>(
     todosQuery, { variables: { uuid }, skip: !uuid }
@@ -123,9 +122,6 @@ export default function Index() {
   const handleOpenShareDialog = () => setShareDialogOpen(true);
   const handleCloseShareDialog = () => setShareDialogOpen(false);
 
-  const handleOpenImportDialog = () => setImportDialogOpen(true);
-  const handleCloseImportDialog = () => setImportDialogOpen(false);
-
   useEffect(() => {
     if (!loading && data?.readTodo) {
       const content = data.readTodo.data?.contents ?? [];
@@ -144,14 +140,7 @@ export default function Index() {
       <HeaderButtonBox>
         <Button
           color="primary"
-          startIcon={ <FileDownloadIcon style={ { width: 20 } } /> }
-          variant="contained"
-          onClick={ handleOpenImportDialog }
-        />
-        <ImportDialog open={ importDialogOpen } onClose={ handleCloseImportDialog } />
-        <Button
-          color="primary"
-          startIcon={ <FileUploadIcon style={ { width: 20 } } /> }
+          startIcon={ <ShareIcon style={ { width: 20 } } /> }
           sx={ { ml: 0.5 } }
           variant="contained"
           onClick={ handleOpenShareDialog }
@@ -177,7 +166,7 @@ export default function Index() {
       </TodoInputBox>
 
       <TodoListBox>
-        { todos.map(todo => (
+        { todoList.map(todo => (
           <TodoItem
             key={ todo.id }
             todo={ todo }

@@ -1,4 +1,5 @@
 import { css, keyframes, styled } from '@mui/material';
+import React from 'react';
 import { useState } from 'react';
 
 // 애니메이션 정의 (fadeIn, fadeOut)
@@ -65,8 +66,7 @@ const TodoItemContainer = styled('div')<TodoItemContainerProps>((props) => css`
   }
 `);
 
-// 개별 할 일 아이템 컴포넌트 (삭제 애니메이션 적용)
-export default function TodoItem({ todo, onToggle, onDeleteRequest }: {
+function TodoItem({ todo, onToggle, onDeleteRequest }: {
   todo: { id: number; text: string; completed: boolean },
   onToggle: (id: number, checked: boolean) => void,
   onDeleteRequest: (id: number) => void
@@ -74,9 +74,7 @@ export default function TodoItem({ todo, onToggle, onDeleteRequest }: {
   const [isRemoving, setIsRemoving] = useState(false);
 
   const handleDelete = () => {
-    // 삭제 애니메이션 시작
     setIsRemoving(true);
-    // 300ms 후에 실제로 할 일 삭제
     setTimeout(() => {
       onDeleteRequest(todo.id);
     }, 300);
@@ -97,4 +95,6 @@ export default function TodoItem({ todo, onToggle, onDeleteRequest }: {
       </button>
     </TodoItemContainer>
   );
-}
+};
+
+export default React.memo(TodoItem);
