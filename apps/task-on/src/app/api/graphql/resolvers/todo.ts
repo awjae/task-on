@@ -1,7 +1,19 @@
 import { Todo } from '@libs/mongoose';
 import { IContent } from '../../../_common/type';
 
-// TODO: ERROR Message 모듈화 필요
+const errorMessage = {
+  create: '생성 에러',
+  noContents: '변경사항이 없습니다.',
+  noAuth: '공유되지 않은 대상입니다.',
+  notFound: '대상를 찾을 수 없습니다.',
+};
+
+const successMessage = {
+  ['200']: '성공적으로 처리되었습니다.',
+  ['201']: '할 일이 성공적으로 저장되었습니다.',
+  ['202']: '할 일이 성공적으로 업데이트되었습니다.',
+  ['204']: '할 일을 찾을 수 없습니다.',
+};
 
 export const todoResolvers = {
   Query: {
@@ -32,14 +44,14 @@ export const todoResolvers = {
             { uuid }, { $set: { isShared: true, contents }}
           );
           if (!updateTodo)
-            throw Error('생성 에러');
+            throw Error(errorMessage.create);
 
           newTodo = updateTodo;
         }
       }
 
       return {
-        message: '할 일이 성공적으로 저장되었습니다.',
+        message: successMessage[201],
         status: 201,
         data: newTodo,
       };
@@ -58,10 +70,10 @@ export const todoResolvers = {
 
       return updatedTodo ?
       {
-        message: '할 일이 성공적으로 추가되었습니다.',
+        message: successMessage[201],
         status: 201,
       } : {
-        message: '할 일을 찾을 수 없습니다.',
+        message: successMessage[204],
         status: 204,
       };
     },
@@ -78,10 +90,10 @@ export const todoResolvers = {
 
       return updatedTodo ?
         {
-          message: '할 일이 성공적으로 업데이트되었습니다.',
+          message: successMessage[202],
           status: 202,
         } : {
-          message: '할 일을 찾을 수 없습니다.',
+          message: successMessage[204],
           status: 204,
         };
     },
@@ -95,12 +107,12 @@ export const todoResolvers = {
       // TODO: general 한 api를 개발한 것은 좋지만, valid field에 대한 것을 제한 하는 것이 필요할 듯
 
       if (!operations || Object.keys(operations).length === 0)
-        throw new Error('변경사항이 없습니다.');
+        throw new Error(errorMessage.noContents);
 
       if(Object.keys(operations).includes('isShared')) {
         const targetItem = await Todo.findOne({ uuid });
         if (targetItem && !targetItem.isShared)
-          throw new Error('공유되지 않은 리스트입니다.');
+          throw new Error(errorMessage.noAuth);
       }
 
       const updatedItem = await Todo.findOneAndUpdate(
@@ -110,10 +122,10 @@ export const todoResolvers = {
       );
 
       if (!updatedItem)
-        throw new Error('리스트를 찾을 수 없습니다.');
+        throw new Error(errorMessage.notFound);
 
       return {
-          message: '할 일이 성공적으로 업데이트되었습니다.',
+          message:  successMessage[200],
           status: 200,
           data: updatedItem
         };
@@ -132,13 +144,10 @@ export const todoResolvers = {
       );
 
       if (!todo)
-        return {
-          message: '할 일을 찾을 수 없습니다.',
-          status: 204,
-        };
+        throw Error(errorMessage.notFound);
 
       return {
-        message: '할 일이 성공적으로 삭제되었습니다.',
+        message: successMessage[200],
         status: 200,
       };
     },
