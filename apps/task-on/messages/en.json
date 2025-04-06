@@ -1,6 +1,7 @@
 {
   "HomePage": {
     "title": "Todo",
+    "calendar": "Calendar",
     "add": "Add",
     "addInputPlaceholder": "Enter your task"
   }

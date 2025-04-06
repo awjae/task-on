@@ -24,6 +24,7 @@ import {
   createTodoItemQuery as createItemQuery,
   readTodoQuery
 } from '../api/graphql/queries/todo';
+import NavigationBar from '../_components/navigation-bar';
 
 const todosQuery = gql`
   ${readTodoQuery}
@@ -136,6 +137,8 @@ export default function Index() {
       <Header>
         <h1>{ t('title') }</h1>
       </Header>
+
+      <NavigationBar />
 
       <HeaderButtonBox>
         <Button

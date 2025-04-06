@@ -1,6 +1,7 @@
 {
   "HomePage": {
     "title": "할 일",
+    "calendar": "캘린더",
     "add": "추가",
     "addInputPlaceholder": "할 일을 입력하세요"
   }
