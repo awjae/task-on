@@ -55,16 +55,14 @@ export default function NavigationBar() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const t = useTranslations('HomePage');
   const router = useRouter();
-  const [locale] = usePathname().split('/');
+  const locale = usePathname().split('/')[1] ?? 'ko';
 
-  const toggleDrawer = (open: boolean) => () => {
-    setDrawerOpen(open);
-  };
+  const toggleDrawer = (open: boolean) => setDrawerOpen(open);
 
   return <>
     <IconButton
       style={ { position: 'absolute', top: 16, left: 16 } }
-      onClick={ toggleDrawer(true) }
+      onClick={ () => toggleDrawer(true) }
     >
       <MenuIcon />
     </IconButton>
@@ -74,16 +72,16 @@ export default function NavigationBar() {
       ModalProps={ { keepMounted: true } }
       open={ drawerOpen }
       variant="temporary"
-      onClose={ toggleDrawer(false) }
+      onClose={ () => toggleDrawer(false) }
     >
       <ul>
-        <li onClick={ () => router.push(locale ?? '/ko') }>
+        <li onClick={ () => router.push('/' + locale) }>
           <StyledBox>
             <FormatListNumberedIcon />
             <Typography component="p">{ t('title') }</Typography>
           </StyledBox>
         </li>
-        <li onClick={ () => router.push((locale ?? '/ko') + '/calendar') }>
+        <li onClick={ () => router.push(('/' + locale) + '/calendar') }>
           <StyledBox>
             <CalendarMonthIcon />
             <Typography component="p">{ t('calendar') }</Typography>

@@ -8,7 +8,6 @@ import { ShareDialog } from '../_components/share-dialog';
 import { IContent } from '../_common/type';
 import { useMutation, useQuery } from '@apollo/client';
 import { gql } from 'graphql-tag';
-import Container from './container';
 import useLocalStorageState from 'use-local-storage-state';
 import toast from 'react-hot-toast';
 import {
@@ -132,52 +131,50 @@ export default function Index() {
     }
   }, [loading, data, todos, setTodos]);
 
-  return <Container>
-    <StyledPage>
-      <Header>
-        <h1>{ t('title') }</h1>
-      </Header>
+  return <StyledPage>
+    <Header>
+      <h1>{ t('title') }</h1>
+    </Header>
 
-      <NavigationBar />
+    <NavigationBar />
 
-      <HeaderButtonBox>
-        <Button
-          color="primary"
-          startIcon={ <ShareIcon style={ { width: 20 } } /> }
-          sx={ { ml: 0.5 } }
-          variant="contained"
-          onClick={ handleOpenShareDialog }
+    <HeaderButtonBox>
+      <Button
+        color="primary"
+        startIcon={ <ShareIcon style={ { width: 20 } } /> }
+        sx={ { ml: 0.5 } }
+        variant="contained"
+        onClick={ handleOpenShareDialog }
         />
-        <ShareDialog
-          open={ shareDialogOpen }
-          onCloseAction={ handleCloseShareDialog }
-          onSubmitAction={ handleShareSubmit }
+      <ShareDialog
+        open={ shareDialogOpen }
+        onCloseAction={ handleCloseShareDialog }
+        onSubmitAction={ handleShareSubmit }
         />
-      </HeaderButtonBox>
+    </HeaderButtonBox>
 
-      <TodoInputBox>
-        <input
-          placeholder={ t('addInputPlaceholder') }
-          type="text"
-          value={ newTodo }
-          onChange={ (event) => setNewTodo(event.target.value) }
-          onKeyDown={ (event) => event.key === 'Enter' && addTodo() }
+    <TodoInputBox>
+      <input
+        placeholder={ t('addInputPlaceholder') }
+        type="text"
+        value={ newTodo }
+        onChange={ (event) => setNewTodo(event.target.value) }
+        onKeyDown={ (event) => event.key === 'Enter' && addTodo() }
         />
-        <button onClick={ addTodo }>
-          { t('add') }
-        </button>
-      </TodoInputBox>
+      <button onClick={ addTodo }>
+        { t('add') }
+      </button>
+    </TodoInputBox>
 
-      <TodoListBox>
-        { todoList.map(todo => (
-          <TodoItem
-            key={ todo.id }
-            todo={ todo }
-            onDeleteRequest={ deleteTodo }
-            onToggle={ toggleTodo }
+    <TodoListBox>
+      { todoList.map(todo => (
+        <TodoItem
+          key={ todo.id }
+          todo={ todo }
+          onDeleteRequest={ deleteTodo }
+          onToggle={ toggleTodo }
           />
         )) }
-      </TodoListBox>
-    </StyledPage>
-  </Container>;
+    </TodoListBox>
+  </StyledPage>;
 }
