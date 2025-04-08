@@ -43,7 +43,7 @@ const deleteTodoItemQuery = gql`
 
 export default function Index() {
   const isClient = typeof window !== 'undefined';
-  const t = useTranslations('HomePage');
+  const t = useTranslations('Home');
 
   const [todos, setTodos] = useLocalStorageState<Array<IContent>>('todos', {
     defaultValue: isClient && localStorage.getItem('todos') ?

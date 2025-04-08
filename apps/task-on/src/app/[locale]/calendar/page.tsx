@@ -9,6 +9,7 @@ import { enUS, ko } from 'date-fns/locale';
 import { StyledPage } from '../styles';
 import { usePathname } from 'next/navigation';
 import NavigationBar from '../../_components/navigation-bar';
+import { useTranslations } from 'next-intl';
 
 const locales = {
   'en-US': enUS,
@@ -66,6 +67,7 @@ export default function Index() {
   const [eventTitle, setEventTitle] = useState('');
   const [eventDate, setEventDate] = useState<Date | null>(null);
   const locale = usePathname().split('/')[1];
+  const t = useTranslations('Calendar');
 
   const handleAddEvent = () => {
     if (eventTitle && eventDate) {
@@ -82,10 +84,10 @@ export default function Index() {
 
   return <StyledPage>
     <NavigationBar />
-    <Typography style={ { textAlign: 'center' } } variant="h4">일정 등록</Typography>
+    <Typography style={ { textAlign: 'center' } } variant="h4">{ t('title') }</Typography>
     <div style={ { display: 'flex', flexDirection: 'column', alignItems: 'center' } }>
       <input
-        placeholder="일정 제목"
+        placeholder={ t('addInputPlaceholder') }
         style={ { width: '90%', marginBottom: '10px', padding: '10px', borderRadius: '5px', border: '1px solid #ccc' } }
         type="text"
         value={ eventTitle }
@@ -97,7 +99,7 @@ export default function Index() {
         onChange={ (e) => setEventDate(new Date(e.target.value)) }
         />
       <Button color="primary" style={ { width: '90%' } } variant="contained" onClick={ handleAddEvent }>
-        일정 추가
+        { t('add') }
       </Button>
     </div>
 
