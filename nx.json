@@ -70,7 +70,6 @@
   "generators": {
     "@nx/next": {
       "application": {
-        "style": "styled-components",
         "linter": "eslint"
       }
     }
