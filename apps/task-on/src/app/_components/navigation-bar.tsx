@@ -53,7 +53,7 @@ const StyledBox = styled('div')`
 
 export default function NavigationBar() {
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const t = useTranslations('HomePage');
+  const t = useTranslations('Home');
   const router = useRouter();
   const locale = usePathname().split('/')[1] ?? 'ko';
 

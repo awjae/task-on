@@ -85,25 +85,27 @@ export default function Index() {
   return <StyledPage>
     <NavigationBar />
     <Typography style={ { textAlign: 'center' } } variant="h4">{ t('title') }</Typography>
-    <div style={ { display: 'flex', flexDirection: 'column', alignItems: 'center' } }>
+
+    <div style={ { display: 'flex', alignItems: 'center', justifyContent: 'space-between',  marginTop: 16 } }>
+      <input
+        style={ { padding: '10px', borderRadius: '5px', border: '1px solid #ccc' } }
+        type="date"
+        onChange={ (e) => setEventDate(new Date(e.target.value)) }
+      />
       <input
         placeholder={ t('addInputPlaceholder') }
-        style={ { width: '90%', marginBottom: '10px', padding: '10px', borderRadius: '5px', border: '1px solid #ccc' } }
+        style={ { padding: '10px', borderRadius: '5px', border: '1px solid #ccc', flexGrow: 1, margin: '0px 8px' } }
         type="text"
         value={ eventTitle }
         onChange={ (e) => setEventTitle(e.target.value) }
-        />
-      <input
-        style={ { width: '90%', marginBottom: '10px', padding: '10px', borderRadius: '5px', border: '1px solid #ccc' } }
-        type="date"
-        onChange={ (e) => setEventDate(new Date(e.target.value)) }
-        />
-      <Button color="primary" style={ { width: '90%' } } variant="contained" onClick={ handleAddEvent }>
+      />
+      <Button color="primary" variant="contained" onClick={ handleAddEvent }>
         { t('add') }
       </Button>
     </div>
 
-    <div style={ { width: '100%', overflowX: 'auto' } }>
+    { /* TODO: toolbar 커스텀 필요함 */ }
+    <div style={ { width: '100%', overflowX: 'auto', marginTop: 16 } }>
       <Calendar
         endAccessor="end"
         events={ events }
@@ -112,7 +114,7 @@ export default function Index() {
         messages={ locale === 'ko' ? message : undefined }
         startAccessor="start"
         style={ { height: 500, margin: '20px 0' } }
-        />
+      />
     </div>
   </StyledPage>;
 }
