@@ -17,10 +17,17 @@ export interface IEvent {
 
 const WrapperDiv = styled('div')(({ theme }) => `
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: space-between;
   margin-top: 16px;
   gap: 16px;
+
+  &>div {
+    display: flex;
+    width: 100%;
+    gap: 12px;
+  }
 
   input {
     border: none;
@@ -28,13 +35,11 @@ const WrapperDiv = styled('div')(({ theme }) => `
     border-radius: 0;
     font-size: 14px;
     background: transparent;
+    flex-grow: 1;
 
     &:focus {
       outline: none;
       border-bottom-color: ${theme.palette.taskOn.lightGreen};
-    }
-    &:nth-of-type(2) {
-      flex: 1;
     }
   }
 
@@ -56,20 +61,30 @@ export default function Index() {
   const [events, setEvents] = useState<IEvent[]>([]);
   const [eventTitle, setEventTitle] = useState('');
   const [eventDate, setEventDate] = useState<Date | null>(null);
+  const [eventStartTime, setEventStartTime] = useState<Date | null>(null);
+  const [eventEndTime, setEventEndTime] = useState<Date | null>(null);
+
+
   const locale = usePathname().split('/')[1];
   const t = useTranslations('Calendar');
 
   const handleAddEvent = () => {
-    if (eventTitle && eventDate) {
+    if (eventTitle && eventDate && eventStartTime && eventEndTime) {
       const newEvent = {
         title: eventTitle,
-        start: eventDate,
-        end: eventDate,
+        start: eventStartTime,
+        end: eventEndTime,
       };
       setEvents([...events, newEvent]);
       setEventTitle('');
       setEventDate(null);
+      setEventStartTime(null);
+      setEventEndTime(null);
     }
+  };
+
+  const handleSelectEvent = (event: IEvent) => {
+    console.log(event);
   };
 
   return <StyledPage>
@@ -77,21 +92,47 @@ export default function Index() {
     <Typography style={ { textAlign: 'center' } } variant="h4">{ t('title') }</Typography>
 
     <WrapperDiv>
-      <input
-        type="date"
-        onChange={ (e) => setEventDate(new Date(e.target.value)) }
+      <div>
+        <input
+          type="date"
+          onChange={ (e) => setEventDate(new Date(e.target.value)) }
       />
-      <input
-        placeholder={ t('addInputPlaceholder') }
-        type="text"
-        value={ eventTitle }
-        onChange={ (e) => setEventTitle(e.target.value) }
-      />
-      <Button color="primary" variant="contained" onClick={ handleAddEvent }>
-        { t('add') }
-      </Button>
+        <input
+          type="time"
+          onChange={ (e) => {
+            const timeParts = e.target.value.split(':');
+            if (eventDate && timeParts[0] && timeParts[1]) {
+              const updatedStartDate = new Date(eventDate);
+              updatedStartDate.setHours(parseInt(timeParts[0]), parseInt(timeParts[1]));
+              setEventStartTime(updatedStartDate);
+            }
+          } }
+          />
+        <input
+          type="time"
+          onChange={ (e) => {
+            const timeParts = e.target.value.split(':');
+            if (eventDate && timeParts[0] && timeParts[1]) {
+              const updatedEndDate = new Date(eventDate);
+              updatedEndDate.setHours(parseInt(timeParts[0]), parseInt(timeParts[1]));
+              setEventEndTime(updatedEndDate);
+            }
+          } }
+        />
+      </div>
+      <div>
+        <input
+          placeholder={ t('addInputPlaceholder') }
+          type="text"
+          value={ eventTitle }
+          onChange={ (e) => setEventTitle(e.target.value) }
+        />
+        <Button color="primary" variant="contained" onClick={ handleAddEvent }>
+          { t('add') }
+        </Button>
+      </div>
     </WrapperDiv>
 
-    <BigCalendar events={ events } locale={ locale }/>
+    <BigCalendar events={ events } locale={ locale } onSelectEvent={ handleSelectEvent }/>
   </StyledPage>;
 }

@@ -69,10 +69,12 @@ const CalendarWrapper = styled('div')`
 
 export default function BigCalendar({
   events,
-  locale
+  locale,
+  onSelectEvent
 }: {
   events: IEvent[];
   locale?: string;
+  onSelectEvent: (event: IEvent, e: React.SyntheticEvent<HTMLElement>) => void;
 }) {
 
   return <CalendarWrapper>
@@ -84,6 +86,7 @@ export default function BigCalendar({
       messages={ locale === 'ko' ? message : undefined }
       startAccessor="start"
       style={ { height: 500, margin: '20px 0' } }
+      onSelectEvent={ onSelectEvent }
     />
   </CalendarWrapper>;
 }
