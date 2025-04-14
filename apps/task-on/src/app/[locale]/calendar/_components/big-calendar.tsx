@@ -3,6 +3,7 @@ import type { IEvent } from '../page';
 import { format as defaultFormat, getDay, parse, startOfWeek } from 'date-fns';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import { enUS, ko } from 'date-fns/locale';
+import { styled } from '@mui/material';
 
 const locales = {
   'en-US': enUS,
@@ -54,6 +55,17 @@ const format = {
   eventTimeRangeEndFormat: ({ start, end }: DateRange) => end.toLocaleTimeString('ko-KR'),
 };
 
+const CalendarWrapper = styled('div')`
+  width: 100%;
+  overflow-x: auto;
+  margin-top: 16;
+
+  .rbc-toolbar {
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+`;
 
 export default function BigCalendar({
   events,
@@ -64,7 +76,7 @@ export default function BigCalendar({
 }) {
 
   { /* TODO: toolbar 커스텀 필요함 */ }
-  return <div style={ { width: '100%', overflowX: 'auto', marginTop: 16 } }>
+  return <CalendarWrapper>
     <Calendar
       endAccessor="end"
       events={ events }
@@ -74,5 +86,5 @@ export default function BigCalendar({
       startAccessor="start"
       style={ { height: 500, margin: '20px 0' } }
     />
-  </div>;
+  </CalendarWrapper>;
 }

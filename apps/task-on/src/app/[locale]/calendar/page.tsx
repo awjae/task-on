@@ -15,20 +15,42 @@ export interface IEvent {
   end: Date
 }
 
-const WrapperDiv = styled('div')`
+const WrapperDiv = styled('div')(({ theme }) => `
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-top: 16;
-  gap: 8px;
+  margin-top: 16px;
+  gap: 16px;
 
   input {
-    padding: 10px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-    flex-grow: 1;
+    border: none;
+    border-bottom: 2px solid ${theme.palette.divider};
+    border-radius: 0;
+    font-size: 14px;
+    background: transparent;
+
+    &:focus {
+      outline: none;
+      border-bottom-color: ${theme.palette.taskOn.lightGreen};
+    }
+    &:nth-of-type(2) {
+      flex: 1;
+    }
   }
-`;
+
+  button {
+    height: 30px;
+    background-color: ${theme.palette.taskOn.lightGreen};
+    text-align: center;
+    & > span {
+      margin-right: 0;
+      margin-left: 0;
+    }
+    &:hover {
+      background: ${theme.palette.taskOn.oliveGreen};
+    }
+  }
+`);
 
 export default function Index() {
   const [events, setEvents] = useState<IEvent[]>([]);
