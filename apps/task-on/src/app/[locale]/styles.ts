@@ -27,7 +27,7 @@ export const HeaderButtonBox = styled('div')(({ theme }) => `
   right: 20px;
   top: 20px;
 
-  Button {
+  button {
     min-width: 35px;
     height: 30px;
     padding-left: 4px;

@@ -75,7 +75,6 @@ export default function BigCalendar({
   locale?: string;
 }) {
 
-  { /* TODO: toolbar 커스텀 필요함 */ }
   return <CalendarWrapper>
     <Calendar
       endAccessor="end"
