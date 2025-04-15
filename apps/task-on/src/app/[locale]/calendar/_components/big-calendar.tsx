@@ -1,5 +1,4 @@
-import { Calendar, dateFnsLocalizer, DateRange } from 'react-big-calendar';
-import type { IEvent } from '../page';
+import { Calendar, dateFnsLocalizer, DateRange, Event } from 'react-big-calendar';
 import { format as defaultFormat, getDay, parse, startOfWeek } from 'date-fns';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import { enUS, ko } from 'date-fns/locale';
@@ -72,9 +71,9 @@ export default function BigCalendar({
   locale,
   onSelectEvent
 }: {
-  events: IEvent[];
+  events: Event[];
   locale?: string;
-  onSelectEvent: (event: IEvent, e: React.SyntheticEvent<HTMLElement>) => void;
+  onSelectEvent: (event: Event, e: React.SyntheticEvent<HTMLElement>) => void;
 }) {
 
   return <CalendarWrapper>

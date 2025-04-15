@@ -8,12 +8,7 @@ import { usePathname } from 'next/navigation';
 import NavigationBar from '../../_components/navigation-bar';
 import { useTranslations } from 'next-intl';
 import BigCalendar from './_components/big-calendar';
-
-export interface IEvent {
-  title: string;
-  start: Date;
-  end: Date
-}
+import { Event } from 'react-big-calendar';
 
 const WrapperDiv = styled('div')(({ theme }) => `
   display: flex;
@@ -58,7 +53,7 @@ const WrapperDiv = styled('div')(({ theme }) => `
 `);
 
 export default function Index() {
-  const [events, setEvents] = useState<IEvent[]>([]);
+  const [events, setEvents] = useState<Event[]>([]);
   const [eventTitle, setEventTitle] = useState('');
   const [eventDate, setEventDate] = useState<Date | null>(null);
   const [eventStartTime, setEventStartTime] = useState<Date | null>(null);
@@ -69,21 +64,23 @@ export default function Index() {
   const t = useTranslations('Calendar');
 
   const handleAddEvent = () => {
-    if (eventTitle && eventDate && eventStartTime && eventEndTime) {
+    if (!eventDate)
+      return undefined;
+
       const newEvent = {
         title: eventTitle,
-        start: eventStartTime,
-        end: eventEndTime,
+        allDay: true,
+        start: eventDate,
+        end: eventDate,
       };
       setEvents([...events, newEvent]);
       setEventTitle('');
       setEventDate(null);
       setEventStartTime(null);
       setEventEndTime(null);
-    }
   };
 
-  const handleSelectEvent = (event: IEvent) => {
+  const handleSelectEvent = (event: Event) => {
     console.log(event);
   };
 
