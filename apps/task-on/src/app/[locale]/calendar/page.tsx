@@ -70,8 +70,8 @@ export default function Index() {
       const newEvent = {
         title: eventTitle,
         allDay: true,
-        start: eventDate,
-        end: eventDate,
+        start: eventStartTime || eventDate,
+        end: eventEndTime || eventDate,
       };
       setEvents([...events, newEvent]);
       setEventTitle('');
@@ -81,7 +81,7 @@ export default function Index() {
   };
 
   const handleSelectEvent = (event: Event) => {
-    console.log(event);
+    // TODO: todo detail dialog 열어야됨
   };
 
   return <StyledPage>
