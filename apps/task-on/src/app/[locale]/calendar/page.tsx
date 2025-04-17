@@ -1,7 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import { Button, styled, Typography } from '@mui/material';
+import {
+  Button, Dialog, DialogActions, DialogContent, DialogTitle, styled, Typography
+} from '@mui/material';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import { StyledPage } from '../styles';
 import { usePathname } from 'next/navigation';
@@ -58,6 +60,8 @@ export default function Index() {
   const [eventDate, setEventDate] = useState<Date | null>(null);
   const [eventStartTime, setEventStartTime] = useState<Date | null>(null);
   const [eventEndTime, setEventEndTime] = useState<Date | null>(null);
+  const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
+  const [openDialog, setOpenDialog] = useState(false);
 
 
   const locale = usePathname().split('/')[1];
@@ -73,6 +77,7 @@ export default function Index() {
         start: eventStartTime || eventDate,
         end: eventEndTime || eventDate,
       };
+
       setEvents([...events, newEvent]);
       setEventTitle('');
       setEventDate(null);
@@ -81,7 +86,13 @@ export default function Index() {
   };
 
   const handleSelectEvent = (event: Event) => {
-    // TODO: todo detail dialog 열어야됨
+    setSelectedEvent(event);
+    setOpenDialog(true);
+  };
+
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+    setSelectedEvent(null);
   };
 
   return <StyledPage>
@@ -90,12 +101,15 @@ export default function Index() {
 
     <WrapperDiv>
       <div>
+        { /* TODO: controlled input들을 가독성이 좋게 개선해야함 // ref는 쓰기 좀 그렇담 */ }
         <input
           type="date"
+          value={ eventDate ? eventDate.toISOString().split('T')[0] : '' }
           onChange={ (e) => setEventDate(new Date(e.target.value)) }
-      />
+        />
         <input
           type="time"
+          value={ eventStartTime ? eventStartTime.toISOString().split('T')[0] : '' }
           onChange={ (e) => {
             const timeParts = e.target.value.split(':');
             if (eventDate && timeParts[0] && timeParts[1]) {
@@ -107,6 +121,7 @@ export default function Index() {
           />
         <input
           type="time"
+          value={ eventEndTime ? eventEndTime.toISOString().split('T')[0] : '' }
           onChange={ (e) => {
             const timeParts = e.target.value.split(':');
             if (eventDate && timeParts[0] && timeParts[1]) {
@@ -131,5 +146,21 @@ export default function Index() {
     </WrapperDiv>
 
     <BigCalendar events={ events } locale={ locale } onSelectEvent={ handleSelectEvent }/>
+
+    <Dialog open={ openDialog } onClose={ handleCloseDialog }>
+      <DialogTitle>{ selectedEvent?.title }</DialogTitle>
+      <DialogContent>
+        { selectedEvent?.allDay === false ?
+          <>
+            <Typography>시작 시간: { selectedEvent?.start?.toLocaleString() }</Typography>
+            <Typography>종료 시간: { selectedEvent?.end?.toLocaleString() }</Typography>
+          </>
+          : undefined
+        }
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={ handleCloseDialog }>닫기</Button>
+      </DialogActions>
+    </Dialog>
   </StyledPage>;
 }
