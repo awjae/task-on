@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import {
   Button, Dialog, DialogActions, DialogContent, DialogTitle, styled, Typography
 } from '@mui/material';
@@ -95,41 +95,59 @@ export default function Index() {
     setSelectedEvent(null);
   };
 
+  const handleStartTimeChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const timeParts = e.target.value.split(':');
+    if (eventDate && timeParts[0] && timeParts[1]) {
+      const updatedStartDate = new Date(eventDate);
+      updatedStartDate.setHours(parseInt(timeParts[0]), parseInt(timeParts[1]));
+      setEventStartTime(updatedStartDate);
+    }
+  }, [eventDate]);
+
+  const handleEndTimeChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const timeParts = e.target.value.split(':');
+    if (eventDate && timeParts[0] && timeParts[1]) {
+      const updatedEndDate = new Date(eventDate);
+      updatedEndDate.setHours(parseInt(timeParts[0]), parseInt(timeParts[1]));
+      setEventEndTime(updatedEndDate);
+    }
+  }, [eventDate]);
+
+  const formatDate = (date: Date | null): string => {
+    if (!date)
+      return '';
+
+    return date.toISOString().split('T')[0] ?? '';
+  };
+
+  const formatTime = (date: Date | null): string => {
+    if (!date)
+      return '';
+
+    return date.toISOString().split('T')[1]?.substring(0, 5) ?? '';
+  };
+
+
   return <StyledPage>
     <NavigationBar />
     <Typography style={ { textAlign: 'center' } } variant="h4">{ t('title') }</Typography>
 
     <WrapperDiv>
       <div>
-        { /* TODO: controlled input들을 가독성이 좋게 개선해야함 // ref는 쓰기 좀 그렇담 */ }
         <input
           type="date"
-          value={ eventDate ? eventDate.toISOString().split('T')[0] : '' }
+          value={ formatDate(eventDate) }
           onChange={ (e) => setEventDate(new Date(e.target.value)) }
         />
         <input
           type="time"
-          value={ eventStartTime ? eventStartTime.toISOString().split('T')[0] : '' }
-          onChange={ (e) => {
-            const timeParts = e.target.value.split(':');
-            if (eventDate && timeParts[0] && timeParts[1]) {
-              const updatedStartDate = new Date(eventDate);
-              updatedStartDate.setHours(parseInt(timeParts[0]), parseInt(timeParts[1]));
-              setEventStartTime(updatedStartDate);
-            }
-          } }
+          value={ formatTime(eventStartTime) }
+          onChange={ handleStartTimeChange }
           />
         <input
           type="time"
-          value={ eventEndTime ? eventEndTime.toISOString().split('T')[0] : '' }
-          onChange={ (e) => {
-            const timeParts = e.target.value.split(':');
-            if (eventDate && timeParts[0] && timeParts[1]) {
-              const updatedEndDate = new Date(eventDate);
-              updatedEndDate.setHours(parseInt(timeParts[0]), parseInt(timeParts[1]));
-              setEventEndTime(updatedEndDate);
-            }
-          } }
+          value={ formatTime(eventEndTime) }
+          onChange={ handleEndTimeChange }
         />
       </div>
       <div>
