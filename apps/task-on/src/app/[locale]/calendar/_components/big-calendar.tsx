@@ -1,3 +1,5 @@
+'use client';
+
 import { Calendar, dateFnsLocalizer, DateRange, Event } from 'react-big-calendar';
 import { format as defaultFormat, getDay, parse, startOfWeek } from 'date-fns';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
@@ -66,26 +68,35 @@ const CalendarWrapper = styled('div')`
   }
 `;
 
+//NOTE: localstorage에 date값이 string으로 저장되는 case 발생
+function parseStringToDate(events: Event[]) {
+  return events.map(event => ({
+    ...event,
+    start: event.start ? new Date(event.start) : new Date(),
+    end: event.end ? new Date(event.end) : new Date()
+  }));
+}
+
 export default function BigCalendar({
   events,
   locale,
-  onSelectEvent
+  onSelectEventAction
 }: {
   events: Event[];
   locale?: string;
-  onSelectEvent: (event: Event, e: React.SyntheticEvent<HTMLElement>) => void;
+  onSelectEventAction: (event: Event, e: React.SyntheticEvent<HTMLElement>) => void;
 }) {
 
   return <CalendarWrapper>
     <Calendar
       endAccessor="end"
-      events={ events }
+      events={ parseStringToDate(events) }
       formats={ locale === 'ko' ? format : undefined }
       localizer={ localizer }
       messages={ locale === 'ko' ? message : undefined }
       startAccessor="start"
       style={ { height: 500, margin: '20px 0' } }
-      onSelectEvent={ onSelectEvent }
+      onSelectEvent={ onSelectEventAction }
     />
   </CalendarWrapper>;
 }

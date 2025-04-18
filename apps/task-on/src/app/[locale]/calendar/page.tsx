@@ -11,6 +11,7 @@ import NavigationBar from '../../_components/navigation-bar';
 import { useTranslations } from 'next-intl';
 import BigCalendar from './_components/big-calendar';
 import { Event } from 'react-big-calendar';
+import useLocalStorageState from 'use-local-storage-state';
 
 const WrapperDiv = styled('div')(({ theme }) => `
   display: flex;
@@ -55,14 +56,19 @@ const WrapperDiv = styled('div')(({ theme }) => `
 `);
 
 export default function Index() {
-  const [events, setEvents] = useState<Event[]>([]);
+  const isClient = typeof window !== 'undefined';
+  const [events, setEvents] = useLocalStorageState<Array<Event>>('events', {
+    defaultValue: isClient && localStorage.getItem('events') ?
+      JSON.parse(localStorage.getItem('events') || '[]') : [],
+    defaultServerValue: [],
+  });
+
   const [eventTitle, setEventTitle] = useState('');
   const [eventDate, setEventDate] = useState<Date | null>(null);
   const [eventStartTime, setEventStartTime] = useState<Date | null>(null);
   const [eventEndTime, setEventEndTime] = useState<Date | null>(null);
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
   const [openDialog, setOpenDialog] = useState(false);
-
 
   const locale = usePathname().split('/')[1];
   const t = useTranslations('Calendar');
@@ -163,7 +169,7 @@ export default function Index() {
       </div>
     </WrapperDiv>
 
-    <BigCalendar events={ events } locale={ locale } onSelectEvent={ handleSelectEvent }/>
+    <BigCalendar events={ events } locale={ locale } onSelectEventAction={ handleSelectEvent }/>
 
     <Dialog open={ openDialog } onClose={ handleCloseDialog }>
       <DialogTitle>{ selectedEvent?.title }</DialogTitle>
