@@ -2,7 +2,7 @@
 
 import { useCallback, useState } from 'react';
 import {
-  Button, Dialog, DialogActions, DialogContent, DialogTitle, styled, Typography
+  Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography
 } from '@mui/material';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import { StyledPage } from '../styles';
@@ -12,48 +12,7 @@ import { useTranslations } from 'next-intl';
 import BigCalendar from './_components/big-calendar';
 import { Event } from 'react-big-calendar';
 import useLocalStorageState from 'use-local-storage-state';
-
-const WrapperDiv = styled('div')(({ theme }) => `
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
-  margin-top: 16px;
-  gap: 16px;
-
-  &>div {
-    display: flex;
-    width: 100%;
-    gap: 12px;
-  }
-
-  input {
-    border: none;
-    border-bottom: 2px solid ${theme.palette.divider};
-    border-radius: 0;
-    font-size: 14px;
-    background: transparent;
-    flex-grow: 1;
-
-    &:focus {
-      outline: none;
-      border-bottom-color: ${theme.palette.taskOn.lightGreen};
-    }
-  }
-
-  button {
-    height: 30px;
-    background-color: ${theme.palette.taskOn.lightGreen};
-    text-align: center;
-    & > span {
-      margin-right: 0;
-      margin-left: 0;
-    }
-    &:hover {
-      background: ${theme.palette.taskOn.oliveGreen};
-    }
-  }
-`);
+import { WrapperDiv } from './styles';
 
 export default function Index() {
   const isClient = typeof window !== 'undefined';
@@ -132,7 +91,6 @@ export default function Index() {
 
     return date.toISOString().split('T')[1]?.substring(0, 5) ?? '';
   };
-
 
   return <StyledPage>
     <NavigationBar />
