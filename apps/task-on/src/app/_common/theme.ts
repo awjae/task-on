@@ -1,7 +1,6 @@
 'use client';
 import { createTheme } from '@mui/material';
 
-// MUI의 Palette 인터페이스 확장
 declare module '@mui/material' {
   interface Palette {
     taskOn: {
@@ -24,7 +23,6 @@ declare module '@mui/material' {
   }
 }
 
-// 테마 생성
 export const customTheme = createTheme({
   cssVariables: true,
   palette: {

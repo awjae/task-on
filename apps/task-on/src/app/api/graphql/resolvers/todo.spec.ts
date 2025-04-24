@@ -26,8 +26,6 @@ const server = new ApolloServer({
   resolvers,
 });
 
-const tempEditKey = '1234';
-
 beforeAll(async () => {
   try {
     await mongoose.connect(mongoURI);
