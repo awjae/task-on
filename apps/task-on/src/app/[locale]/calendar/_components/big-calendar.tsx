@@ -1,7 +1,6 @@
 'use client';
 
 import { Calendar, Event } from 'react-big-calendar';
-import 'react-big-calendar/lib/css/react-big-calendar.css';
 import { CalendarWrapper } from './styles';
 import { format, localizer, message } from './util';
 
