@@ -137,7 +137,8 @@ export default function Index() {
             <Typography>시작 시간: { selectedEvent?.start?.toLocaleString() }</Typography>
             <Typography>종료 시간: { selectedEvent?.end?.toLocaleString() }</Typography>
           </>
-          : undefined
+          :
+          <Typography>하루 종일</Typography>
         }
       </DialogContent>
       <DialogActions>
